@@ -134,7 +134,7 @@ namespace ManagedWinapi.Windows
                 tvi = (TVITEM)ic.ReadToStructure(0, typeof(TVITEM))!;
                 if (tvi.pszText != tc.Location) MessageBox.Show(tvi.pszText + " != " + tc.Location);
                 var result = Encoding.Default.GetString(tc.Read());
-                if (result.IndexOf('\0') != -1) result = result.Substring(0, result.IndexOf('\0'));
+                if (result.IndexOf('\0') != -1) result = result[..result.IndexOf('\0')];
                 ic.Dispose();
                 tc.Dispose();
                 return result;

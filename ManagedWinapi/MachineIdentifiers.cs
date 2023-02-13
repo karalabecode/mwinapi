@@ -211,7 +211,7 @@ namespace ManagedWinapi
         {
           var disk =
               new ManagementObject("win32_logicaldisk.deviceid=\"" +
-              drive.Substring(0, 2) + "\"");
+              drive[..2] + "\"");
           disk.Get();
           result.Add(drive, disk["VolumeSerialNumber"] == null ? null : disk["VolumeSerialNumber"].ToString());
         }

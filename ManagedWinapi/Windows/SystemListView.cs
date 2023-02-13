@@ -175,7 +175,7 @@ namespace ManagedWinapi.Windows
                 }
                 var tmp = tc.Read();
                 var title = Encoding.Default.GetString(tmp);
-                if (title.IndexOf('\0') != -1) title = title.Substring(0, title.IndexOf('\0'));
+                if (title.IndexOf('\0') != -1) title = title[..title.IndexOf('\0')];
                 var image = lvi.iImage;
                 var state = lvi.state;
                 tc.Dispose();
@@ -206,7 +206,7 @@ namespace ManagedWinapi.Windows
                     lvc = (LVCOLUMN)lc.ReadToStructure(0, typeof(LVCOLUMN))!;
                     var tmp = tc.Read();
                     var title = Encoding.Default.GetString(tmp);
-                    if (title.IndexOf('\0') != -1) title = title.Substring(0, title.IndexOf('\0'));
+                    if (title.IndexOf('\0') != -1) title = title[..title.IndexOf('\0')];
                     result.Add(new SystemListViewColumn(lvc.fmt, lvc.cx, lvc.iSubItem, title));
                 }
                 tc.Dispose();

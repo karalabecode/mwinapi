@@ -333,7 +333,7 @@ namespace ManagedWinapi.Windows.Contents
                                         if (tmpCols.Contains(h))
                                         {
                                             usedHdr.Add(header);
-                                            tmpCols = tmpCols.Substring(tmpCols.IndexOf(h) + h.Length);
+                                            tmpCols = tmpCols[(tmpCols.IndexOf(h) + h.Length)..];
                                         }
                                     }
                                     foreach (var header in hdr)
@@ -343,13 +343,13 @@ namespace ManagedWinapi.Windows.Contents
                                         {
                                             if (!cols!.StartsWith(header + ": "))
                                                 throw new Exception();
-                                            cols = cols.Substring(header.Length + 1);
+                                            cols = cols[(header.Length + 1)..];
                                             string elem;
                                             if (usedHdr.Count > 1)
                                             {
                                                 var pos = cols.IndexOf("; " + usedHdr[1] + ": ");
-                                                elem = cols.Substring(0, pos);
-                                                cols = cols.Substring(pos + 2);
+                                                elem = cols[..pos];
+                                                cols = cols[(pos + 2)..];
                                             }
                                             else
                                             {
