@@ -93,7 +93,7 @@ namespace ManagedWinapi
         /// </summary>
         public static ProcessMemoryChunk AllocStruct(Process process, object structure)
         {
-            int size = Marshal.SizeOf(structure);
+            var size = Marshal.SizeOf(structure);
             ProcessMemoryChunk result = Alloc(process, size);
             result.WriteStructure(0, structure);
             return result;
@@ -117,7 +117,7 @@ namespace ManagedWinapi
         /// </summary>
         public void WriteStructure(int offset, object structure)
         {
-            int size = Marshal.SizeOf(structure);
+            var size = Marshal.SizeOf(structure);
             IntPtr localPtr = Marshal.AllocHGlobal(size);
             try
             {
@@ -162,7 +162,7 @@ namespace ManagedWinapi
         public byte[] Read(int offset, int length)
         {
             if (offset + length > size) throw new ArgumentException("Exceeding chunk size");
-            byte[] result = new byte[length];
+            var result = new byte[length];
             ReadProcessMemory(hProcess, new IntPtr(location.ToInt64() + offset), result, new UIntPtr((uint)length), IntPtr.Zero);
             return result;
         }
@@ -189,7 +189,7 @@ namespace ManagedWinapi
         /// </summary>
         public object? ReadToStructure(int offset, Type structureType)
         {
-            int size = Marshal.SizeOf(structureType);
+            var size = Marshal.SizeOf(structureType);
             IntPtr localPtr = Marshal.AllocHGlobal(size);
             try
             {

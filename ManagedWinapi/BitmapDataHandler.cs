@@ -112,12 +112,12 @@ namespace ManagedWinapi
     public Color GetPixel(int x, int y)
     {
       VerifyArugments(x, y);
-      int index = y * this.bitmapData.Stride + x * BYTES_PER_PIXEL;
-      byte blue = this.pixelData[index];
+      var index = y * this.bitmapData.Stride + x * BYTES_PER_PIXEL;
+      var blue = this.pixelData[index];
       ++index;
-      byte green = this.pixelData[index];
+      var green = this.pixelData[index];
       ++index;
-      byte red = this.pixelData[index];
+      var red = this.pixelData[index];
       return Color.FromArgb(red, green, blue);
     }
 
@@ -184,15 +184,15 @@ namespace ManagedWinapi
         throw new InvalidOperationException("The bitmap is no longer locked; pixel information is no longer maintained.");
       }
 
-      PixelData pixel = new PixelData();
-      for (int ycoordinate = 0; ycoordinate < Bitmap.Height; ++ycoordinate)
+      var pixel = new PixelData();
+      for (var ycoordinate = 0; ycoordinate < Bitmap.Height; ++ycoordinate)
       {
-        int offset = ycoordinate * this.bitmapData.Stride;
-        for (int xcoordinate = 0; xcoordinate < Bitmap.Width; ++xcoordinate)
+        var offset = ycoordinate * this.bitmapData.Stride;
+        for (var xcoordinate = 0; xcoordinate < Bitmap.Width; ++xcoordinate)
         {
-          int bIndex = offset + xcoordinate * BYTES_PER_PIXEL;
-          int gIndex = bIndex + 1;
-          int rIndex = gIndex + 1;
+          var bIndex = offset + xcoordinate * BYTES_PER_PIXEL;
+          var gIndex = bIndex + 1;
+          var rIndex = gIndex + 1;
           pixel.X = xcoordinate;
           pixel.Y = ycoordinate;
           pixel.R = this.pixelData[rIndex];
@@ -227,7 +227,7 @@ namespace ManagedWinapi
     public void SetPixel(int x, int y, Color color)
     {
       VerifyArugments(x, y);
-      int index = y * this.bitmapData.Stride + x * BYTES_PER_PIXEL;
+      var index = y * this.bitmapData.Stride + x * BYTES_PER_PIXEL;
 
       this.pixelData[index] = color.B;
       ++index;

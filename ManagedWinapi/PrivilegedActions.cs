@@ -36,14 +36,14 @@ namespace ManagedWinapi
         {
             get
             {
-                SYSTEMTIME st = new SYSTEMTIME();
+                var st = new SYSTEMTIME();
                 ApiHelper.FailIfZero(GetLocalTime(ref st));
                 return st.ToDateTime();
             }
 
             set
             {
-                SYSTEMTIME st = new SYSTEMTIME(value);
+                var st = new SYSTEMTIME(value);
                 // Set it twice due to possible daylight savings change
                 ApiHelper.FailIfZero(SetLocalTime(ref st));
                 ApiHelper.FailIfZero(SetLocalTime(ref st));
@@ -57,14 +57,14 @@ namespace ManagedWinapi
         {
             get
             {
-                SYSTEMTIME st = new SYSTEMTIME();
+                var st = new SYSTEMTIME();
                 ApiHelper.FailIfZero(GetSystemTime(ref st));
                 return st.ToDateTime();
             }
 
             set
             {
-                SYSTEMTIME st = new SYSTEMTIME(value);
+                var st = new SYSTEMTIME(value);
                 ApiHelper.FailIfZero(SetLocalTime(ref st));
             }
         }

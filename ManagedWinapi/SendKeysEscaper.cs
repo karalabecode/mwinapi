@@ -75,27 +75,27 @@ namespace ManagedWinapi
         private EscapableState[] lookupTable = new EscapableState[256];
 
         private SendKeysEscaper() {
-            for (int i = 0; i < lookupTable.Length; i++)
+            for (var i = 0; i < lookupTable.Length; i++)
             {
                 lookupTable[i] = EscapableState.ALWAYS;
             }
-            foreach (char c in "%()+^`{}~´")
+            foreach (var c in "%()+^`{}~´")
             {
                 lookupTable[c] = EscapableState.BRACED_ONLY;
             }
             lookupTable[180] = EscapableState.BRACED_ONLY;
-            for (int i = 9; i <= 13; i++)
+            for (var i = 9; i <= 13; i++)
             {
                 lookupTable[i] = EscapableState.UNBRACED_ONLY;
             }
             lookupTable[32] = EscapableState.UNBRACED_ONLY;
             lookupTable[133] = EscapableState.UNBRACED_ONLY;
             lookupTable[160] = EscapableState.UNBRACED_ONLY;
-            for (int i = 0; i < 9; i++)
+            for (var i = 0; i < 9; i++)
             {  
                lookupTable[i] = EscapableState.NOT_AT_ALL; 
             }
-            for (int i = 14; i < 30; i++)
+            for (var i = 14; i < 30; i++)
 			{
                lookupTable[i] = EscapableState.NOT_AT_ALL; 
 			}
@@ -115,8 +115,8 @@ namespace ManagedWinapi
         /// <returns>The escaped string.</returns>
         public string escape(string literal, bool preferBraced)
         {
-            StringBuilder sb = new StringBuilder(literal.Length);
-            foreach (char c in literal)
+            var sb = new StringBuilder(literal.Length);
+            foreach (var c in literal)
             {
                 switch (getEscapableState(c))
                 {

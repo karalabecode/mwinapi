@@ -226,8 +226,8 @@ namespace ManagedWinapi.Hooks
         {
             if (code == HC_ACTION)
             {
-                EVENTMSG em = (EVENTMSG)Marshal.PtrToStructure(lParam, typeof(EVENTMSG))!;
-                JournalMessage jm = JournalMessage.Create(em);
+                var em = (EVENTMSG)Marshal.PtrToStructure(lParam, typeof(EVENTMSG))!;
+                var jm = JournalMessage.Create(em);
                 if (RecordEvent != null)
                 {
                     RecordEvent(this, new JournalRecordEventArgs(jm));
@@ -297,7 +297,7 @@ namespace ManagedWinapi.Hooks
             if (code == HC_GETNEXT)
             {
                 callNext = false;
-                int tick = Environment.TickCount;
+                var tick = Environment.TickCount;
                 if (nextEventTime > tick)
                 {
                     return nextEventTime - tick;
@@ -325,7 +325,7 @@ namespace ManagedWinapi.Hooks
                     }
                 }
                 // now we have the next event, which should be sent
-                EVENTMSG em = (EVENTMSG)Marshal.PtrToStructure(lParam, typeof(EVENTMSG))!;
+                var em = (EVENTMSG)Marshal.PtrToStructure(lParam, typeof(EVENTMSG))!;
                 em.hWnd = nextEvent!.HWnd;
                 em.time = nextEvent.Time;
                 em.message = nextEvent.Message;

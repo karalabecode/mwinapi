@@ -249,8 +249,8 @@ namespace ManagedWinapi.Audio.Mixer
             {
                 if (srcLines == null)
                 {
-                    List<SourceLine> sls = new List<SourceLine>(SourceLineCount);
-                    for (int i = 0; i < SourceLineCount; i++)
+                    var sls = new List<SourceLine>(SourceLineCount);
+                    for (var i = 0; i < SourceLineCount; i++)
                     {
                         sls.Add(SourceLine.GetLine(mixer, line.dwDestination, i));
                     }
@@ -262,7 +262,7 @@ namespace ManagedWinapi.Audio.Mixer
 
         internal static DestinationLine GetLine(Mixer mixer, int index)
         {
-            MIXERLINE m = new MIXERLINE();
+            var m = new MIXERLINE();
             m.cbStruct = Marshal.SizeOf(m);
             m.dwDestination = index;
             mixerGetLineInfoA(mixer.Handle, ref m, MIXER_GETLINEINFOF_DESTINATION);
@@ -282,7 +282,7 @@ namespace ManagedWinapi.Audio.Mixer
             {
                 if (childLines == null)
                 {
-                    List<MixerLine> cl = new List<MixerLine>();
+                    var cl = new List<MixerLine>();
                     foreach (MixerLine ml in SourceLines)
                     {
                         cl.Add(ml);
@@ -306,7 +306,7 @@ namespace ManagedWinapi.Audio.Mixer
 
         internal static SourceLine GetLine(Mixer mixer, int destIndex, int srcIndex)
         {
-            MIXERLINE m = new MIXERLINE();
+            var m = new MIXERLINE();
             m.cbStruct = Marshal.SizeOf(m);
             m.dwDestination = destIndex;
             m.dwSource = srcIndex;

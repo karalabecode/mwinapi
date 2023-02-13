@@ -346,10 +346,10 @@ namespace ManagedWinapi.Windows
         /// <returns>The filtered toplevel windows</returns>
         public static SystemWindow[] FilterToplevelWindows(Predicate<SystemWindow> predicate)
         {
-            List<SystemWindow> wnds = new List<SystemWindow>();
+            var wnds = new List<SystemWindow>();
             EnumWindows(new EnumWindowsProc(delegate (IntPtr hwnd, IntPtr lParam)
             {
-                SystemWindow tmp = new SystemWindow(hwnd);
+                var tmp = new SystemWindow(hwnd);
                 if (predicate(tmp))
                     wnds.Add(tmp);
                 return 1;
@@ -403,7 +403,7 @@ namespace ManagedWinapi.Windows
                 {
                     if (w.Rectangle.ToRectangle().Contains(x, y))
                     {
-                        int ar2 = getArea(w);
+                        var ar2 = getArea(w);
                         if (ar2 <= area)
                         {
                             area = ar2;
@@ -469,11 +469,11 @@ namespace ManagedWinapi.Windows
         /// <returns>The list of child windows.</returns>
         public SystemWindow[] FilterDescendantWindows(bool directOnly, Predicate<SystemWindow> predicate)
         {
-            List<SystemWindow> wnds = new List<SystemWindow>();
+            var wnds = new List<SystemWindow>();
             EnumChildWindows(_hwnd, delegate (IntPtr hwnd, IntPtr lParam)
             {
-                SystemWindow tmp = new SystemWindow(hwnd);
-                bool add = true;
+                var tmp = new SystemWindow(hwnd);
+                var add = true;
                 if (directOnly)
                 {
                     add = tmp.Parent._hwnd == _hwnd;
@@ -508,7 +508,7 @@ namespace ManagedWinapi.Windows
         {
             get
             {
-                StringBuilder sb = new StringBuilder(GetWindowTextLength(_hwnd) + 1);
+                var sb = new StringBuilder(GetWindowTextLength(_hwnd) + 1);
                 GetWindowText(_hwnd, sb, sb.Capacity);
                 return sb.ToString();
             }
@@ -528,8 +528,8 @@ namespace ManagedWinapi.Windows
         {
             get
             {
-                int length = SendGetMessage(WM_GETTEXTLENGTH);
-                StringBuilder sb = new StringBuilder(length + 1);
+                var length = SendGetMessage(WM_GETTEXTLENGTH);
+                var sb = new StringBuilder(length + 1);
                 SendMessage(new HandleRef(this, HWnd), WM_GETTEXT, new IntPtr(sb.Capacity), sb);
                 return sb.ToString();
             }
@@ -545,10 +545,10 @@ namespace ManagedWinapi.Windows
             {
                 try
                 {
-                    int length = 64;
+                    var length = 64;
                     while (true)
                     {
-                        StringBuilder sb = new StringBuilder(length);
+                        var sb = new StringBuilder(length);
                         ApiHelper.FailIfZero(GetClassName(_hwnd, sb, sb.Capacity));
                         if (sb.Length != length - 1)
                         {
@@ -700,7 +700,7 @@ namespace ManagedWinapi.Windows
         {
             get
             {
-                WINDOWPLACEMENT wp = new WINDOWPLACEMENT();
+                var wp = new WINDOWPLACEMENT();
                 wp.length = Marshal.SizeOf(wp);
                 GetWindowPlacement(_hwnd, ref wp);
                 return wp.rcNormalPosition;
@@ -708,7 +708,7 @@ namespace ManagedWinapi.Windows
 
             set
             {
-                WINDOWPLACEMENT wp = new WINDOWPLACEMENT();
+                var wp = new WINDOWPLACEMENT();
                 wp.length = Marshal.SizeOf(wp);
                 GetWindowPlacement(_hwnd, ref wp);
                 wp.rcNormalPosition = value;
@@ -728,7 +728,7 @@ namespace ManagedWinapi.Windows
 
             set
             {
-                WINDOWPLACEMENT wp = new WINDOWPLACEMENT();
+                var wp = new WINDOWPLACEMENT();
                 wp.length = Marshal.SizeOf(wp);
                 GetWindowPlacement(_hwnd, ref wp);
                 wp.rcNormalPosition.Bottom = value.Y + wp.rcNormalPosition.Height;
@@ -751,7 +751,7 @@ namespace ManagedWinapi.Windows
 
             set
             {
-                WINDOWPLACEMENT wp = new WINDOWPLACEMENT();
+                var wp = new WINDOWPLACEMENT();
                 wp.length = Marshal.SizeOf(wp);
                 GetWindowPlacement(_hwnd, ref wp);
                 wp.rcNormalPosition.Right = wp.rcNormalPosition.Left + value.Width;
@@ -768,7 +768,7 @@ namespace ManagedWinapi.Windows
         {
             get
             {
-                RECT r = new RECT();
+                var r = new RECT();
                 GetWindowRect(_hwnd, out r);
 
                 try
@@ -798,9 +798,9 @@ namespace ManagedWinapi.Windows
         {
             get
             {
-                RECT r = new RECT();
+                var r = new RECT();
                 ApiHelper.FailIfZero(GetClientRect(_hwnd, out r));
-                Point p = new Point();
+                var p = new Point();
                 p.X = p.Y = 0;
                 ApiHelper.FailIfZero(ClientToScreen(_hwnd, ref p));
                 Rectangle result = r;
@@ -846,7 +846,7 @@ namespace ManagedWinapi.Windows
             get
             {
                 int pid;
-                int tid = GetWindowThreadProcessId(HWnd, out pid);
+                var tid = GetWindowThreadProcessId(HWnd, out pid);
                 foreach (ProcessThread t in Process.GetProcessById(pid).Threads)
                 {
                     if (t.Id == tid) return t;
@@ -862,7 +862,7 @@ namespace ManagedWinapi.Windows
         {
             get
             {
-                WINDOWPLACEMENT wp = new WINDOWPLACEMENT();
+                var wp = new WINDOWPLACEMENT();
                 wp.length = Marshal.SizeOf(wp);
                 GetWindowPlacement(HWnd, ref wp);
                 switch (wp.showCmd % 4)
@@ -927,8 +927,8 @@ namespace ManagedWinapi.Windows
         {
             get
             {
-                Bitmap bmp = new Bitmap(Position.Width, Position.Height);
-                Graphics g = Graphics.FromImage(bmp);
+                var bmp = new Bitmap(Position.Width, Position.Height);
+                var g = Graphics.FromImage(bmp);
                 IntPtr pTarget = g.GetHdc();
                 IntPtr pSource = CreateCompatibleDC(pTarget);
                 IntPtr pOrig = SelectObject(pSource, bmp.GetHbitmap());
@@ -951,7 +951,7 @@ namespace ManagedWinapi.Windows
             get
             {
                 IntPtr rgn = CreateRectRgn(0, 0, 0, 0);
-                int r = GetWindowRgn(HWnd, rgn);
+                var r = GetWindowRgn(HWnd, rgn);
                 if (r == (int)GetWindowRegnReturnValues.ERROR)
                 {
                     return null;
@@ -960,8 +960,8 @@ namespace ManagedWinapi.Windows
             }
             set
             {
-                Bitmap bmp = new Bitmap(1, 1);
-                Graphics g = Graphics.FromImage(bmp);
+                var bmp = new Bitmap(1, 1);
+                var g = Graphics.FromImage(bmp);
                 SetWindowRgn(HWnd, value!.GetHrgn(g), true);
                 g.Dispose();
             }
@@ -1169,7 +1169,7 @@ namespace ManagedWinapi.Windows
             {
                 return false;
             }
-            SystemWindow? sw = obj as SystemWindow;
+            var sw = obj as SystemWindow;
             return Equals(sw);
         }
 

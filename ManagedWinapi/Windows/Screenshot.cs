@@ -93,17 +93,17 @@ namespace ManagedWinapi.Windows
         /// <param name="shape">Shape (region) used for clipping.</param>
         public static Bitmap TakeScreenshot(Rectangle rect, bool includeCursor, Region? shape)
         {
-            Bitmap result = new Bitmap(rect.Width, rect.Height);
+            var result = new Bitmap(rect.Width, rect.Height);
 
-            using (Graphics g = Graphics.FromImage(result))
+            using (var g = Graphics.FromImage(result))
             {
                 g.CopyFromScreen(rect.Location, Point.Empty, rect.Size);
             }
             if (shape != null)
             {
-                for (int i = 0; i < result.Width; i++)
+                for (var i = 0; i < result.Width; i++)
                 {
-                    for (int j = 0; j < result.Height; j++)
+                    for (var j = 0; j < result.Height; j++)
                     {
                         if (!shape.IsVisible(new Point(i, j)))
                         {
@@ -120,9 +120,9 @@ namespace ManagedWinapi.Windows
                 ApiHelper.FailIfZero(GetCursorInfo(out ci));
                 if ((ci.flags & CURSOR_SHOWING) != 0)
                 {
-                    using (Cursor c = new Cursor(ci.hCursor))
+                    using (var c = new Cursor(ci.hCursor))
                     {
-                        Point cursorLocation = new Point(ci.ptScreenPos.X - rect.X - c.HotSpot.X, ci.ptScreenPos.Y - rect.Y - c.HotSpot.Y);
+                        var cursorLocation = new Point(ci.ptScreenPos.X - rect.X - c.HotSpot.X, ci.ptScreenPos.Y - rect.Y - c.HotSpot.Y);
                         // c.Draw() does not work with XOR cursors (like the default text cursor)
                         DrawCursor(ref result, c, cursorLocation);
                     }
@@ -137,7 +137,7 @@ namespace ManagedWinapi.Windows
             // http://social.msdn.microsoft.com/Forums/en-US/csharpgeneral/thread/291990e0-fb68-4e0a-ae12-835d43b9275b/
 
             IntPtr compatibleHDC;
-            using (Graphics g = Graphics.FromImage(bitmap))
+            using (var g = Graphics.FromImage(bitmap))
             {
                 IntPtr hDC = g.GetHdc();
                 compatibleHDC = CreateCompatibleDC(hDC);
@@ -162,8 +162,8 @@ namespace ManagedWinapi.Windows
         public static Bitmap TakeOverlargeScreenshot(SystemWindow window, bool clientAreaOnly)
         {
             Rectangle position = window.Position;
-            int width = position.Width + 1;
-            int height = position.Height + 1;
+            var width = position.Width + 1;
+            var height = position.Height + 1;
             while (true)
             {
                 Bitmap result = TakeOverlargeScreenshot(window, clientAreaOnly, width, height);
@@ -189,8 +189,8 @@ namespace ManagedWinapi.Windows
         /// <param name="height">Height of the bitmap</param>
         public static Bitmap TakeOverlargeScreenshot(SystemWindow window, bool clientAreaOnly, int width, int height)
         {
-            Bitmap bmp = new Bitmap(width, height);
-            Graphics g = Graphics.FromImage(bmp);
+            var bmp = new Bitmap(width, height);
+            var g = Graphics.FromImage(bmp);
             IntPtr pTarget = g.GetHdc();
             IntPtr pSource = CreateCompatibleDC(pTarget);
             IntPtr pOrig = SelectObject(pSource, bmp.GetHbitmap());
@@ -267,9 +267,9 @@ namespace ManagedWinapi.Windows
             scrollCount = 0;
             Cursor.Position = mousePoint;
             Bitmap buffer = screenshot(rect);
-            int usedHeight = buffer.Height;
+            var usedHeight = buffer.Height;
             buffer = ResizeBitmap(buffer, buffer.Height * 4);
-            bool lastMayBeIncomplete = false;
+            var lastMayBeIncomplete = false;
             while (Cursor.Position == mousePoint)
             {
                 scrollCount++;
@@ -285,8 +285,8 @@ namespace ManagedWinapi.Windows
                 Application.DoEvents();
                 highlight(rect);
                 Bitmap nextPart = screenshot(rect);
-                int scrollHeight = AppendBelow(buffer, usedHeight, nextPart, false);
-                foreach (int delay in new int[] { 0, 2, 10, 100, 200, 1000 })
+                var scrollHeight = AppendBelow(buffer, usedHeight, nextPart, false);
+                foreach (var delay in new int[] { 0, 2, 10, 100, 200, 1000 })
                 {
                     if (scrollHeight > 0 || Cursor.Position != mousePoint)
                         break;
@@ -326,16 +326,16 @@ namespace ManagedWinapi.Windows
         private static void CropToSimilarRange(Point centerPoint, ref Rectangle rect, ref Bitmap buffer, ref int usedHeight, ref Bitmap nextPart)
         {
             Point mousePoint = Cursor.Position;
-            int offs = usedHeight - nextPart.Height;
-            int relX = centerPoint.X - rect.X;
-            int relY = centerPoint.Y - rect.Y;
+            var offs = usedHeight - nextPart.Height;
+            var relX = centerPoint.X - rect.X;
+            var relY = centerPoint.Y - rect.Y;
 
             // copy all pixel values
-            int[,] bufferPixels = new int[rect.Width, rect.Height];
-            int[,] nextPartPixels = new int[rect.Width, rect.Height];
-            for (int x = 0; x < rect.Width; x++)
+            var bufferPixels = new int[rect.Width, rect.Height];
+            var nextPartPixels = new int[rect.Width, rect.Height];
+            for (var x = 0; x < rect.Width; x++)
             {
-                for (int y = 0; y < rect.Height; y++)
+                for (var y = 0; y < rect.Height; y++)
                 {
                     bufferPixels[x, y] = buffer.GetPixel(x, y + offs).ToArgb();
                     nextPartPixels[x, y] = nextPart.GetPixel(x, y).ToArgb();
@@ -346,14 +346,14 @@ namespace ManagedWinapi.Windows
             int diffX = relX, diffY = relY;
             if (bufferPixels[relX, relY] == nextPartPixels[relX, relY])
             {
-                bool found = false;
-                int maxDistance = Math.Min(Math.Min(relX, relY), Math.Min(nextPart.Width - relX, nextPart.Height - relY));
-                for (int i = 1; !found && i < maxDistance; i++)
+                var found = false;
+                var maxDistance = Math.Min(Math.Min(relX, relY), Math.Min(nextPart.Width - relX, nextPart.Height - relY));
+                for (var i = 1; !found && i < maxDistance; i++)
                 {
-                    for (int j = 0; j < i * 2; j++)
+                    for (var j = 0; j < i * 2; j++)
                     {
-                        int x = relX - i + j;
-                        int y = relY - i;
+                        var x = relX - i + j;
+                        var y = relY - i;
                         if (bufferPixels[x, y] != nextPartPixels[x, y])
                         {
                             diffX = x; diffY = y; found = true;
@@ -386,20 +386,20 @@ namespace ManagedWinapi.Windows
             }
 
             // score every possible scroll height
-            int[] scrollScores = new int[nextPart.Height / 2];
-            for (int x = 0; x < rect.Width; x++)
+            var scrollScores = new int[nextPart.Height / 2];
+            for (var x = 0; x < rect.Width; x++)
             {
 #if !DEBUG
                 if (Cursor.Position != mousePoint) return;
 #endif
-                for (int y = 0; y < rect.Height; y++)
+                for (var y = 0; y < rect.Height; y++)
                 {
                     // look at every pixel that does not match unmoved
-                    int pixel = nextPartPixels[x, y];
+                    var pixel = nextPartPixels[x, y];
                     if (bufferPixels[x, y] != pixel)
                     {
-                        int score = 1000 / (Math.Abs(relX - x) + Math.Abs(relY - y) + 1) + 1;
-                        for (int scrollHeight = 1; scrollHeight < Math.Min(scrollScores.Length, rect.Height - y); scrollHeight++)
+                        var score = 1000 / (Math.Abs(relX - x) + Math.Abs(relY - y) + 1) + 1;
+                        for (var scrollHeight = 1; scrollHeight < Math.Min(scrollScores.Length, rect.Height - y); scrollHeight++)
                         {
                             if (bufferPixels[x, y + scrollHeight] == pixel)
                             {
@@ -411,7 +411,7 @@ namespace ManagedWinapi.Windows
             }
 
             // remove scores that do not preserve relX/relY or diffX/diffY
-            for (int scrollHeight = 1; scrollHeight < scrollScores.Length; scrollHeight++)
+            for (var scrollHeight = 1; scrollHeight < scrollScores.Length; scrollHeight++)
             {
                 if ((relY + scrollHeight < rect.Height && bufferPixels[relX, relY + scrollHeight] != nextPartPixels[relX, relY])
                     || (diffY + scrollHeight < rect.Height && bufferPixels[diffX, diffY + scrollHeight] != nextPartPixels[diffX, diffY]))
@@ -422,21 +422,21 @@ namespace ManagedWinapi.Windows
 
             // take the first 5 scroll distances based on score
             Rectangle newRect = rect;
-            int newRectSize = 0;
-            for (int i = 0; i < 5; i++)
+            var newRectSize = 0;
+            for (var i = 0; i < 5; i++)
             {
 #if !DEBUG
                 if (Cursor.Position != mousePoint) return;
 #endif
-                int maxScore = 0;
-                for (int scrollHeight = 1; scrollHeight < scrollScores.Length; scrollHeight++)
+                var maxScore = 0;
+                for (var scrollHeight = 1; scrollHeight < scrollScores.Length; scrollHeight++)
                 {
                     if (scrollScores[scrollHeight] > maxScore)
                         maxScore = scrollScores[scrollHeight];
                 }
                 if (maxScore == 0)
                     break;
-                for (int scrollHeight = 1; scrollHeight < scrollScores.Length; scrollHeight++)
+                for (var scrollHeight = 1; scrollHeight < scrollScores.Length; scrollHeight++)
                 {
                     if (scrollScores[scrollHeight] == maxScore)
                     {
@@ -448,10 +448,10 @@ namespace ManagedWinapi.Windows
                         // check the maximum rectangle that scrolls and its size
                         int minY = 0, maxY = rect.Height - 1 - scrollHeight;
                         // first scan up and down with a width of 7 pixels
-                        for (int y = relY - 1; y >= minY; y--)
+                        for (var y = relY - 1; y >= minY; y--)
                         {
-                            bool same = true;
-                            for (int x = relX - 3; x <= relX + 3; x++)
+                            var same = true;
+                            for (var x = relX - 3; x <= relX + 3; x++)
                             {
                                 if (bufferPixels[x, y + scrollHeight] != nextPartPixels[x, y])
                                 {
@@ -464,10 +464,10 @@ namespace ManagedWinapi.Windows
                                 minY = y + 1;
                             }
                         }
-                        for (int y = relY + 1; y <= maxY; y++)
+                        for (var y = relY + 1; y <= maxY; y++)
                         {
-                            bool same = true;
-                            for (int x = relX - 3; x <= relX + 3; x++)
+                            var same = true;
+                            for (var x = relX - 3; x <= relX + 3; x++)
                             {
                                 if (bufferPixels[x, y + scrollHeight] != nextPartPixels[x, y])
                                 {
@@ -482,10 +482,10 @@ namespace ManagedWinapi.Windows
                         }
                         // now check left and right
                         int minX = 0, maxX = rect.Width - 1;
-                        for (int x = relX - 1; x >= minX; x--)
+                        for (var x = relX - 1; x >= minX; x--)
                         {
-                            bool same = true;
-                            for (int y = minY; y <= maxY; y++)
+                            var same = true;
+                            for (var y = minY; y <= maxY; y++)
                             {
 
                                 if (bufferPixels[x, y + scrollHeight] != nextPartPixels[x, y])
@@ -497,10 +497,10 @@ namespace ManagedWinapi.Windows
                             if (!same)
                                 minX = x + 1;
                         }
-                        for (int x = relX + 1; x <= maxX; x++)
+                        for (var x = relX + 1; x <= maxX; x++)
                         {
-                            bool same = true;
-                            for (int y = minY; y <= maxY; y++)
+                            var same = true;
+                            for (var y = minY; y <= maxY; y++)
                             {
                                 if (bufferPixels[x, y + scrollHeight] != nextPartPixels[x, y])
                                 {
@@ -511,7 +511,7 @@ namespace ManagedWinapi.Windows
                             if (!same)
                                 maxX = x - 1;
                         }
-                        Rectangle rr = new Rectangle(rect.X + minX, rect.Y + minY, maxX - minX + 1, maxY - minY + 1 + scrollHeight);
+                        var rr = new Rectangle(rect.X + minX, rect.Y + minY, maxX - minX + 1, maxY - minY + 1 + scrollHeight);
                         if (rr.Width > 16 && rr.Height > 16 && rr.Width * rr.Height > newRectSize)
                         {
                             newRect = rr;
@@ -525,10 +525,10 @@ namespace ManagedWinapi.Windows
             if (newRectSize > 0)
             {
                 // do the cropping
-                int cropTop = newRect.Top - rect.Top;
-                int cropLeft = newRect.Left - rect.Left;
-                int cropRight = rect.Right - newRect.Right;
-                int cropBottom = rect.Bottom - newRect.Bottom;
+                var cropTop = newRect.Top - rect.Top;
+                var cropLeft = newRect.Left - rect.Left;
+                var cropRight = rect.Right - newRect.Right;
+                var cropBottom = rect.Bottom - newRect.Bottom;
                 buffer = Crop(buffer, cropTop, cropLeft, cropRight, cropBottom);
                 nextPart = Crop(nextPart, cropTop, cropLeft, cropRight, cropBottom);
                 usedHeight -= cropTop + cropBottom;
@@ -540,8 +540,8 @@ namespace ManagedWinapi.Windows
 
         private static Bitmap Crop(Bitmap original, int cropTop, int cropLeft, int cropRight, int cropBottom)
         {
-            Bitmap result = new Bitmap(original.Width - cropLeft - cropRight, original.Height - cropTop - cropBottom);
-            using (Graphics g = Graphics.FromImage(result))
+            var result = new Bitmap(original.Width - cropLeft - cropRight, original.Height - cropTop - cropBottom);
+            using (var g = Graphics.FromImage(result))
             {
                 g.DrawImage(original, -cropLeft, -cropTop);
             }
@@ -550,14 +550,14 @@ namespace ManagedWinapi.Windows
 
         private static int AppendBelow(Bitmap buffer, int usedHeight, Bitmap nextPart, bool ignoreLastPart)
         {
-            int offs = usedHeight - nextPart.Height;
+            var offs = usedHeight - nextPart.Height;
 
             // copy all pixel values
-            int[,] bufferPixels = new int[nextPart.Width, nextPart.Height];
-            int[,] nextPartPixels = new int[nextPart.Width, nextPart.Height];
-            for (int x = 0; x < nextPart.Width; x++)
+            var bufferPixels = new int[nextPart.Width, nextPart.Height];
+            var nextPartPixels = new int[nextPart.Width, nextPart.Height];
+            for (var x = 0; x < nextPart.Width; x++)
             {
-                for (int y = 0; y < nextPart.Height; y++)
+                for (var y = 0; y < nextPart.Height; y++)
                 {
                     bufferPixels[x, y] = buffer.GetPixel(x, y + offs).ToArgb();
                     nextPartPixels[x, y] = nextPart.GetPixel(x, y).ToArgb();
@@ -565,12 +565,12 @@ namespace ManagedWinapi.Windows
             }
 
             // find offset and append
-            for (int scrollHeight = 0; scrollHeight < nextPart.Height / (ignoreLastPart ? 4 : 2); scrollHeight++)
+            for (var scrollHeight = 0; scrollHeight < nextPart.Height / (ignoreLastPart ? 4 : 2); scrollHeight++)
             {
-                bool same = true;
-                for (int y = 0; same && y < nextPart.Height - scrollHeight * (ignoreLastPart ? 2 : 1); y++)
+                var same = true;
+                for (var y = 0; same && y < nextPart.Height - scrollHeight * (ignoreLastPart ? 2 : 1); y++)
                 {
-                    for (int x = 0; same && x < nextPart.Width; x++)
+                    for (var x = 0; same && x < nextPart.Width; x++)
                     {
                         if (nextPartPixels[x, y] != bufferPixels[x, y + scrollHeight])
                             same = false;
@@ -578,7 +578,7 @@ namespace ManagedWinapi.Windows
                 }
                 if (same)
                 {
-                    using (Graphics g = Graphics.FromImage(buffer))
+                    using (var g = Graphics.FromImage(buffer))
                     {
                         g.DrawImage(nextPart, 0, offs + scrollHeight);
                     }
@@ -590,8 +590,8 @@ namespace ManagedWinapi.Windows
 
         private static Bitmap ResizeBitmap(Bitmap original, int height)
         {
-            Bitmap result = new Bitmap(original.Width, height);
-            using (Graphics g = Graphics.FromImage(result))
+            var result = new Bitmap(original.Width, height);
+            using (var g = Graphics.FromImage(result))
             {
                 g.DrawImage(original, 0, 0);
             }
@@ -612,8 +612,8 @@ namespace ManagedWinapi.Windows
 
         private static Bitmap FlipRotate(Bitmap original)
         {
-            Bitmap result = new Bitmap(original.Height, original.Width);
-            using (Graphics g = Graphics.FromImage(result))
+            var result = new Bitmap(original.Height, original.Width);
+            using (var g = Graphics.FromImage(result))
             {
                 g.Transform = new Matrix(0, 1, 1, 0, 0, 0);
                 g.DrawImage(original, 0, 0);

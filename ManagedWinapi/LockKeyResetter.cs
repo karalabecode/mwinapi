@@ -55,17 +55,17 @@ namespace ManagedWinapi
         /// </summary>
         public LockKeyResetter()
         {
-            for (int i = 0; i < MODIFIER_KEYS.Length; i++)
+            for (var i = 0; i < MODIFIER_KEYS.Length; i++)
             {
-                KeyboardKey k = new KeyboardKey(MODIFIER_KEYS[i]);
-                short dummy = k.AsyncState; // reset remembered status
+                var k = new KeyboardKey(MODIFIER_KEYS[i]);
+                var dummy = k.AsyncState; // reset remembered status
                 if (k.AsyncState != 0)
                 {
                     simpleModifiers[i] = true;
                     k.Release();
                 }
             }
-            KeyboardKey capslockKey = new KeyboardKey(Keys.CapsLock);
+            var capslockKey = new KeyboardKey(Keys.CapsLock);
             int capslockstate = capslockKey.State;
             capslock = ((capslockstate & 0x01) == 0x01);
             if (capslock)
@@ -95,13 +95,13 @@ namespace ManagedWinapi
         {
             if (capslock) {
                 // press caps lock
-                KeyboardKey capslockKey = new KeyboardKey(Keys.CapsLock);
+                var capslockKey = new KeyboardKey(Keys.CapsLock);
                 capslockKey.PressAndRelease();
                 Application.DoEvents();
                 if ((capslockKey.State & 0x01) != 0x01)
                     throw new Exception("Cannot enable caps lock.");
             }
-            for (int i = MODIFIER_KEYS.Length-1; i >= 0; i--)
+            for (var i = MODIFIER_KEYS.Length-1; i >= 0; i--)
             {
                 if (simpleModifiers[i])
                 {

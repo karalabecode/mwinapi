@@ -140,7 +140,7 @@ namespace ManagedWinapi.Audio.Mixer
         {
             get
             {
-                int val = MultipleValuesCount;
+                var val = MultipleValuesCount;
                 if (!IsUniform)
                 {
                     val *= ChannelCount;
@@ -162,12 +162,12 @@ namespace ManagedWinapi.Audio.Mixer
         internal static MixerControl[] GetControls(Mixer mx, MixerLine line, int controlCount)
         {
             if (controlCount == 0) return new MixerControl[0];
-            MIXERCONTROL[] mc = new MIXERCONTROL[controlCount];
-            int mxsize = Marshal.SizeOf(mc[0]);
+            var mc = new MIXERCONTROL[controlCount];
+            var mxsize = Marshal.SizeOf(mc[0]);
             if (mxsize != 148) throw new Exception("" + mxsize);
             //mxsize = 148;
 
-            MIXERLINECONTROLS mlc = new MIXERLINECONTROLS();
+            var mlc = new MIXERLINECONTROLS();
             mlc.cbStruct = Marshal.SizeOf(mlc);
             mlc.cControls = controlCount;
             mlc.dwLineID = line.Id;
@@ -180,13 +180,13 @@ namespace ManagedWinapi.Audio.Mixer
             {
                 throw new Win32Exception("Error #" + err + " calling mixerGetLineControls()\n");
             }
-            for (int i = 0; i < controlCount; i++)
+            for (var i = 0; i < controlCount; i++)
             {
                 mc[i] = (MIXERCONTROL)Marshal.PtrToStructure(new IntPtr(mlc.pamxctrl.ToInt64() + mxsize * i), typeof(MIXERCONTROL))!;
             }
             Marshal.FreeCoTaskMem(mlc.pamxctrl);
-            MixerControl[] result = new MixerControl[controlCount];
-            for (int i = 0; i < controlCount; i++)
+            var result = new MixerControl[controlCount];
+            for (var i = 0; i < controlCount; i++)
             {
                 result[i] = GetControl(mx, line, mc[i]);
             }
@@ -195,7 +195,7 @@ namespace ManagedWinapi.Audio.Mixer
 
         private static MixerControl GetControl(Mixer mx, MixerLine ml, MIXERCONTROL mc)
         {
-            MixerControl result = new MixerControl(mx, ml, mc);
+            var result = new MixerControl(mx, ml, mc);
             if (result.Class == MixerControlClass.FADER && ((uint)result.ControlType & MIXERCONTROL_CT_UNITS_MASK) == (uint)MixerControlType.MIXERCONTROL_CT_UNITS_UNSIGNED)
             {
                 result = new FaderMixerControl(mx, ml, mc);
@@ -329,9 +329,9 @@ namespace ManagedWinapi.Audio.Mixer
         {
             get
             {
-                int[] result = new int[RawValueMultiplicity];
-                MIXERCONTROLDETAILS mcd = new MIXERCONTROLDETAILS();
-                MIXERCONTROLDETAILS_UNSIGNED mcdu = new MIXERCONTROLDETAILS_UNSIGNED();
+                var result = new int[RawValueMultiplicity];
+                var mcd = new MIXERCONTROLDETAILS();
+                var mcdu = new MIXERCONTROLDETAILS_UNSIGNED();
                 mcd.cbStruct = Marshal.SizeOf(mcd);
                 mcd.dwControlID = ctrl.dwControlID;
                 mcd.cChannels = ChannelCount;
@@ -343,7 +343,7 @@ namespace ManagedWinapi.Audio.Mixer
                 {
                     throw new Win32Exception("Error #" + err + " calling mixerGetControlDetails()");
                 }
-                for (int i = 0; i < result.Length; i++)
+                for (var i = 0; i < result.Length; i++)
                 {
                     mcdu = (MIXERCONTROLDETAILS_UNSIGNED)Marshal.PtrToStructure(new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdu) * i), typeof(MIXERCONTROLDETAILS_UNSIGNED))!;
                     result[i] = mcdu.dwValue;
@@ -355,15 +355,15 @@ namespace ManagedWinapi.Audio.Mixer
                 if (value.Length != RawValueMultiplicity)
                     throw new ArgumentException("Incorrect dimension");
 
-                MIXERCONTROLDETAILS mcd = new MIXERCONTROLDETAILS();
-                MIXERCONTROLDETAILS_UNSIGNED mcdu = new MIXERCONTROLDETAILS_UNSIGNED();
+                var mcd = new MIXERCONTROLDETAILS();
+                var mcdu = new MIXERCONTROLDETAILS_UNSIGNED();
                 mcd.cbStruct = Marshal.SizeOf(mcd);
                 mcd.dwControlID = ctrl.dwControlID;
                 mcd.cChannels = ChannelCount;
                 mcd.cMultipleItems = ctrl.cMultipleItems;
                 mcd.paDetails = Marshal.AllocCoTaskMem(Marshal.SizeOf(mcdu) * value.Length);
                 mcd.cbDetails = Marshal.SizeOf(mcdu);
-                for (int i = 0; i < value.Length; i++)
+                for (var i = 0; i < value.Length; i++)
                 {
                     mcdu.dwValue = value[i];
                     Marshal.StructureToPtr(mcdu, new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdu) * i), false);
@@ -393,9 +393,9 @@ namespace ManagedWinapi.Audio.Mixer
         {
             get
             {
-                bool[] result = new bool[RawValueMultiplicity];
-                MIXERCONTROLDETAILS mcd = new MIXERCONTROLDETAILS();
-                MIXERCONTROLDETAILS_BOOLEAN mcdb = new MIXERCONTROLDETAILS_BOOLEAN();
+                var result = new bool[RawValueMultiplicity];
+                var mcd = new MIXERCONTROLDETAILS();
+                var mcdb = new MIXERCONTROLDETAILS_BOOLEAN();
                 mcd.cbStruct = Marshal.SizeOf(mcd);
                 mcd.dwControlID = ctrl.dwControlID;
                 mcd.cChannels = ChannelCount;
@@ -407,7 +407,7 @@ namespace ManagedWinapi.Audio.Mixer
                 {
                     throw new Win32Exception("Error #" + err + " calling mixerGetControlDetails()");
                 }
-                for (int i = 0; i < result.Length; i++)
+                for (var i = 0; i < result.Length; i++)
                 {
                     mcdb = (MIXERCONTROLDETAILS_BOOLEAN)Marshal.PtrToStructure(new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdb) * i), typeof(MIXERCONTROLDETAILS_BOOLEAN))!;
                     result[i] = mcdb.fValue != 0;
@@ -419,15 +419,15 @@ namespace ManagedWinapi.Audio.Mixer
                 if (value.Length != RawValueMultiplicity)
                     throw new ArgumentException("Incorrect dimension");
 
-                MIXERCONTROLDETAILS mcd = new MIXERCONTROLDETAILS();
-                MIXERCONTROLDETAILS_BOOLEAN mcdb = new MIXERCONTROLDETAILS_BOOLEAN();
+                var mcd = new MIXERCONTROLDETAILS();
+                var mcdb = new MIXERCONTROLDETAILS_BOOLEAN();
                 mcd.cbStruct = Marshal.SizeOf(mcd);
                 mcd.dwControlID = ctrl.dwControlID;
                 mcd.cChannels = ChannelCount;
                 mcd.cMultipleItems = ctrl.cMultipleItems;
                 mcd.paDetails = Marshal.AllocCoTaskMem(Marshal.SizeOf(mcdb) * value.Length);
                 mcd.cbDetails = Marshal.SizeOf(mcdb);
-                for (int i = 0; i < value.Length; i++)
+                for (var i = 0; i < value.Length; i++)
                 {
                     mcdb.fValue = value[i] ? 1 : 0;
                     Marshal.StructureToPtr(mcdb, new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdb) * i), false);
@@ -456,9 +456,9 @@ namespace ManagedWinapi.Audio.Mixer
         {
             get
             {
-                string[] result = new string[RawValueMultiplicity];
-                MIXERCONTROLDETAILS mcd = new MIXERCONTROLDETAILS();
-                MIXERCONTROLDETAILS_LISTTEXT mcdlt = new MIXERCONTROLDETAILS_LISTTEXT();
+                var result = new string[RawValueMultiplicity];
+                var mcd = new MIXERCONTROLDETAILS();
+                var mcdlt = new MIXERCONTROLDETAILS_LISTTEXT();
                 mcd.cbStruct = Marshal.SizeOf(mcd);
                 mcd.dwControlID = ctrl.dwControlID;
                 mcd.cChannels = ChannelCount;
@@ -470,7 +470,7 @@ namespace ManagedWinapi.Audio.Mixer
                 {
                     throw new Win32Exception("Error #" + err + " calling mixerGetControlDetails()");
                 }
-                for (int i = 0; i < result.Length; i++)
+                for (var i = 0; i < result.Length; i++)
                 {
                     mcdlt = (MIXERCONTROLDETAILS_LISTTEXT)Marshal.PtrToStructure(new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdlt) * i), typeof(MIXERCONTROLDETAILS_LISTTEXT))!;
                     result[i] = mcdlt.szName;

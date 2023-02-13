@@ -84,7 +84,7 @@ namespace ManagedWinapi.Windows
         /// current Windows message.</param>
         protected override void WndProc(ref Message m)
         {
-            bool handled = false;
+            var handled = false;
             if (EventHandler != null)
                 EventHandler(ref m, ref handled);
             if (!handled)

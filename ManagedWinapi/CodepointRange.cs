@@ -19,21 +19,21 @@ namespace ManagedWinapi
         /// </summary>
         public CodepointRange(Font font)
         {
-            List<char> rangeList = new List<char>();
-            Graphics g = Graphics.FromImage(new Bitmap(1, 1));
+            var rangeList = new List<char>();
+            var g = Graphics.FromImage(new Bitmap(1, 1));
             IntPtr hdc = g.GetHdc();
             IntPtr hFont = font.ToHfont();
             IntPtr oldFont = SelectObject(hdc, hFont);
-            uint size = GetFontUnicodeRanges(hdc, IntPtr.Zero);
+            var size = GetFontUnicodeRanges(hdc, IntPtr.Zero);
             IntPtr glyphSet = Marshal.AllocHGlobal((int)size);
             GetFontUnicodeRanges(hdc, glyphSet);
             codepointCount = Marshal.ReadInt32(glyphSet, 8);
-            int tmp = 0;
-            int count = Marshal.ReadInt32(glyphSet, 12);
-            for (int i = 0; i < count; i++)
+            var tmp = 0;
+            var count = Marshal.ReadInt32(glyphSet, 12);
+            for (var i = 0; i < count; i++)
             {
-                char firstIncluded = (char)Marshal.ReadInt16(glyphSet, 16 + i * 4);
-                char firstExcluded = (char)(firstIncluded + Marshal.ReadInt16(glyphSet, 18 + i * 4));
+                var firstIncluded = (char)Marshal.ReadInt16(glyphSet, 16 + i * 4);
+                var firstExcluded = (char)(firstIncluded + Marshal.ReadInt16(glyphSet, 18 + i * 4));
                 if (firstExcluded == 0 && firstIncluded > 0)
                 {
                     // when U+FFFF is included, firstExcluded will wrap around, so 
@@ -65,11 +65,11 @@ namespace ManagedWinapi
         {
             if (ranges.Length < 2 || ranges.Length % 2 != 0)
                 throw new ArgumentException();
-            int tmp = 0;
-            for (int i = 0; i < ranges.Length; i += 2)
+            var tmp = 0;
+            for (var i = 0; i < ranges.Length; i += 2)
             {
-                char firstIncluded = ranges[i];
-                char firstExcluded = ranges[i + 1];
+                var firstIncluded = ranges[i];
+                var firstExcluded = ranges[i + 1];
                 if (firstExcluded == 0 && firstIncluded > 0)
                 {
                     // when U+FFFF is included, firstExcluded will wrap around, so 
@@ -97,12 +97,12 @@ namespace ManagedWinapi
         /// </summary>
         public static Dictionary<Font, CodepointRange> GetRangesForAllFonts()
         {
-            Dictionary<Font, CodepointRange> result = new Dictionary<Font, CodepointRange>();
+            var result = new Dictionary<Font, CodepointRange>();
             foreach (FontFamily ff in FontFamily.Families)
             {
-                Font[] fonts = new Font[16];
-                CodepointRange[] range = new CodepointRange[fonts.Length];
-                for (int i = 0; i < fonts.Length; i++)
+                var fonts = new Font[16];
+                var range = new CodepointRange[fonts.Length];
+                for (var i = 0; i < fonts.Length; i++)
                 {
                     if (ff.IsStyleAvailable((FontStyle)i))
                     {
@@ -110,10 +110,10 @@ namespace ManagedWinapi
                         range[i] = new CodepointRange(fonts[i]);
                     }
                 }
-                int importantBits = 0;
-                for (int bit = 1; bit < fonts.Length; bit <<= 1)
+                var importantBits = 0;
+                for (var bit = 1; bit < fonts.Length; bit <<= 1)
                 {
-                    for (int i = 0; i < fonts.Length; i++)
+                    for (var i = 0; i < fonts.Length; i++)
                     {
                         if ((i & bit) != 0) continue;
                         if (range[i] != null && range[i | bit] != null)
@@ -131,7 +131,7 @@ namespace ManagedWinapi
                         }
                     }
                 }
-                for (int i = 0; i < fonts.Length; i++)
+                for (var i = 0; i < fonts.Length; i++)
                 {
                     if ((i & importantBits) != i || fonts[i] == null) continue;
                     result.Add(fonts[i], range[i]);
@@ -292,9 +292,9 @@ namespace ManagedWinapi
         /// </summary>
         public bool IsSupported(char codepoint)
         {
-            bool result = false;
-            bool first = true;
-            foreach (char c in ranges)
+            var result = false;
+            var first = true;
+            foreach (var c in ranges)
             {
                 if (c > codepoint || (c == 0 && !first)) break;
                 first = false;
@@ -309,7 +309,7 @@ namespace ManagedWinapi
         public char FindNext(char from, bool supported)
         {
             if (IsSupported(from) == supported) return from;
-            foreach (char c in ranges)
+            foreach (var c in ranges)
             {
                 if (c > from) return c;
             }
@@ -321,8 +321,8 @@ namespace ManagedWinapi
         /// </summary>
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder("[");
-            for (int i = 0; i < ranges.Length; i++)
+            var sb = new StringBuilder("[");
+            for (var i = 0; i < ranges.Length; i++)
             {
                 if (i % 2 == 1)
                 {
@@ -343,12 +343,12 @@ namespace ManagedWinapi
         ///
         public override bool Equals(object? obj)
         {
-            CodepointRange? cr = obj as CodepointRange;
+            var cr = obj as CodepointRange;
             if (cr == null)
                 return false;
             if (codepointCount != cr.codepointCount || ranges.Length != cr.ranges.Length)
                 return false;
-            for (int i = 0; i < ranges.Length; i++)
+            for (var i = 0; i < ranges.Length; i++)
             {
                 if (ranges[i] != cr.ranges[i])
                 {

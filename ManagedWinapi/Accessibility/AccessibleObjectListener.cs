@@ -174,7 +174,7 @@ namespace ManagedWinapi.Accessibility
             IntPtr hwnd, uint idObject, uint idChild, uint dwEventThread, uint dwmsEventTime)
         {
             if (hWinEventHook != handle) return;
-            AccessibleEventArgs aea = new AccessibleEventArgs(eventType, hwnd, idObject, idChild, dwEventThread, dwmsEventTime);
+            var aea = new AccessibleEventArgs(eventType, hwnd, idObject, idChild, dwEventThread, dwmsEventTime);
             if (EventOccurred != null)
                 EventOccurred(this, aea);
         }
@@ -183,7 +183,7 @@ namespace ManagedWinapi.Accessibility
         {
             IAccessible iacc;
             object child;
-            uint result = AccessibleObjectFromEvent(e.HWnd, e.ObjectID, e.ChildID, out iacc, out child);
+            var result = AccessibleObjectFromEvent(e.HWnd, e.ObjectID, e.ChildID, out iacc, out child);
 
             // Note: AccessibleObjectFromEvent() sometimes fails due to missing IAccessible implementation of object and/or child
             // This often happens for HTML content in Internet Explorer (e.g. for any <DIV> w/o 'role' attribute set).

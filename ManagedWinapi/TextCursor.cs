@@ -156,9 +156,9 @@ namespace ManagedWinapi
     /// <returns>The new color resulting from the XOR mask.</returns>
     public static Color XorColorMask(Color original, Color background)
     {
-      int r = original.R ^ background.R;
-      int g = original.G ^ background.G;
-      int b = original.B ^ background.B;
+      var r = original.R ^ background.R;
+      var g = original.G ^ background.G;
+      var b = original.B ^ background.B;
       return Color.FromArgb(r, g, b);
     }
 
@@ -268,7 +268,7 @@ namespace ManagedWinapi
       if (this.originalUserBitmap != null)
       {
         this.image = new Bitmap(this.originalUserBitmap);
-        using (BitmapDataHandler pixelData = new BitmapDataHandler(image))
+        using (var pixelData = new BitmapDataHandler(image))
         {
           pixelData.Enumerate((pixel) =>
           {
@@ -280,11 +280,11 @@ namespace ManagedWinapi
       }
       else
       {
-        int caretHeight = this.height ?? ParentControl!.Font.Height;
+        var caretHeight = this.height ?? ParentControl!.Font.Height;
         this.image = new Bitmap(Width, caretHeight);
-        using (Graphics cursorGraphics = Graphics.FromImage(this.image))
+        using (var cursorGraphics = Graphics.FromImage(this.image))
         {
-          using (SolidBrush brush = new SolidBrush(XorColorMask(Color, ParentControl!.BackColor)))
+          using (var brush = new SolidBrush(XorColorMask(Color, ParentControl!.BackColor)))
           {
             cursorGraphics.FillRectangle(brush, 0, 0, Width, caretHeight);
           }

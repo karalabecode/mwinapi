@@ -85,8 +85,8 @@ namespace ManagedWinapi
         {
             get
             {
-                StringBuilder sb = new StringBuilder(512);
-                int scancode = MapVirtualKey((int)key, 0);
+                var sb = new StringBuilder(512);
+                var scancode = MapVirtualKey((int)key, 0);
                 if (extended)
                     scancode += 0x100;
                 GetKeyNameText(scancode << 16, sb, sb.Capacity);

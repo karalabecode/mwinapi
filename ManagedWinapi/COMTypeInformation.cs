@@ -43,7 +43,7 @@ namespace ManagedWinapi
             dispatch = comObject as IDispatch;
             if (dispatch == null) throw new Exception("Object is not a COM Object");
             int typeInfoCount;
-            int hr = dispatch.GetTypeInfoCount(out typeInfoCount);
+            var hr = dispatch.GetTypeInfoCount(out typeInfoCount);
             if (hr < 0) throw new COMException("GetTypeInfoCount failed", hr);
             if (typeInfoCount != 1) throw new Exception("No TypeInfo present");
             hr = dispatch.GetTypeInfo(0, LCID_US_ENGLISH, out typeInfo);
@@ -71,8 +71,8 @@ namespace ManagedWinapi
         {
             get
             {
-                List<string> result = new List<string>();
-                for (int jj = 0; ; jj++)
+                var result = new List<string>();
+                for (var jj = 0; ; jj++)
                 {
                     IntPtr fncdesc;
                     try
@@ -80,8 +80,8 @@ namespace ManagedWinapi
                         typeInfo.GetFuncDesc(jj, out fncdesc);
                     }
                     catch (COMException) { break; }
-                    ComTypes.FUNCDESC fd = (ComTypes.FUNCDESC)Marshal.PtrToStructure(fncdesc, typeof(ComTypes.FUNCDESC))!;
-                    string[] tmp = new string[1];
+                    var fd = (ComTypes.FUNCDESC)Marshal.PtrToStructure(fncdesc, typeof(ComTypes.FUNCDESC))!;
+                    var tmp = new string[1];
                     int cnt;
                     typeInfo.GetNames(fd.memid, tmp, tmp.Length, out cnt);
                     if (cnt == 1)
@@ -99,8 +99,8 @@ namespace ManagedWinapi
         {
             get
             {
-                List<string> result = new List<string>();
-                for (int jj = 0; ; jj++)
+                var result = new List<string>();
+                for (var jj = 0; ; jj++)
                 {
                     IntPtr vardesc;
                     try
@@ -108,8 +108,8 @@ namespace ManagedWinapi
                         typeInfo.GetVarDesc(jj, out vardesc);
                     }
                     catch (COMException) { break; }
-                    ComTypes.VARDESC vd = (ComTypes.VARDESC)Marshal.PtrToStructure(vardesc, typeof(ComTypes.VARDESC))!;
-                    string[] tmp = new string[1];
+                    var vd = (ComTypes.VARDESC)Marshal.PtrToStructure(vardesc, typeof(ComTypes.VARDESC))!;
+                    var tmp = new string[1];
                     int cnt;
                     typeInfo.GetNames(vd.memid, tmp, tmp.Length, out cnt);
                     if (cnt == 1)

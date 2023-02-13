@@ -81,7 +81,7 @@ namespace ManagedWinapi.Windows
         {
             get
             {
-                int idx = SelectedIndex;
+                var idx = SelectedIndex;
                 if (idx == -1) return null;
                 return this[idx];
             }
@@ -98,8 +98,8 @@ namespace ManagedWinapi.Windows
                 {
                     throw new ArgumentException("Argument out of range");
                 }
-                int length = sw.SendGetMessage(LB_GETTEXTLEN, (uint)index);
-                StringBuilder sb = new StringBuilder(length);
+                var length = sw.SendGetMessage(LB_GETTEXTLEN, (uint)index);
+                var sb = new StringBuilder(length);
                 SystemWindow.SendMessage(new HandleRef(this, sw.HWnd), LB_GETTEXT, new IntPtr(index), sb);
                 return sb.ToString();
 
@@ -169,8 +169,8 @@ namespace ManagedWinapi.Windows
                 {
                     throw new ArgumentException("Argument out of range");
                 }
-                int length = sw.SendGetMessage(CB_GETLBTEXTLEN, (uint)index);
-                StringBuilder sb = new StringBuilder(length);
+                var length = sw.SendGetMessage(CB_GETLBTEXTLEN, (uint)index);
+                var sb = new StringBuilder(length);
                 SystemWindow.SendMessage(new HandleRef(this, sw.HWnd), CB_GETLBTEXT, new IntPtr(index), sb);
                 return sb.ToString();
 

@@ -178,8 +178,8 @@ namespace ManagedWinapi.Hooks
         {
             if (code >= 0 && Callback != null)
             {
-                bool callNext = true;
-                int retval = Callback(code, wParam, lParam, ref callNext);
+                var callNext = true;
+                var retval = Callback(code, wParam, lParam, ref callNext);
                 if (!callNext) return retval;
             }
             return CallNextHookEx(hHook, code, wParam, lParam);
@@ -294,12 +294,12 @@ namespace ManagedWinapi.Hooks
             {
                 if (MSGOccurred != null)
                 {
-                    MSG msg = (MSG)Marshal.PtrToStructure(lParam, typeof(MSG))!;
+                    var msg = (MSG)Marshal.PtrToStructure(lParam, typeof(MSG))!;
                     MSGOccurred(msg);
                 }
                 if (MessageOccurred != null)
                 {
-                    Message msg = (Message)Marshal.PtrToStructure(lParam, typeof(MSG))!;
+                    var msg = (Message)Marshal.PtrToStructure(lParam, typeof(MSG))!;
                     MessageOccurred(msg);
                 }
             }

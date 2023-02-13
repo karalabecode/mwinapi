@@ -167,7 +167,7 @@ namespace ManagedWinapi
 
         private void updateHotkey(bool reregister)
         {
-            bool shouldBeRegistered = isEnabled && !isDisposed && !DesignMode;
+            var shouldBeRegistered = isEnabled && !isDisposed && !DesignMode;
             if (isRegistered && (!shouldBeRegistered || reregister))
             {
                 // unregister hotkey
@@ -177,7 +177,7 @@ namespace ManagedWinapi
             if (!isRegistered && shouldBeRegistered)
             {
                 // register hotkey
-                bool success = RegisterHotKey(hWnd, hotkeyIndex, 
+                var success = RegisterHotKey(hWnd, hotkeyIndex, 
                     (_shift ? MOD_SHIFT : 0) + (_ctrl ? MOD_CONTROL : 0) +
                     (_alt ? MOD_ALT : 0) + (_windows ? MOD_WIN : 0), (int)_keyCode);
                 if (!success) throw new HotkeyAlreadyInUseException();

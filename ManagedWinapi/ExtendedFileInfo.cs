@@ -58,9 +58,9 @@ namespace ManagedWinapi
         /// <param name="small">Whether to get the small icon instead of the large one</param>
         public static Icon? GetExtensionIcon(string extension, bool small)
         {
-            string tmp = Path.GetTempFileName();
+            var tmp = Path.GetTempFileName();
             File.Delete(tmp);
-            string fn = tmp + "." + extension;
+            var fn = tmp + "." + extension;
             try
             {
                 File.Create(fn).Close();
@@ -79,7 +79,7 @@ namespace ManagedWinapi
         /// <param name="small">Whether to get the small icon instead of the large one</param>
         public static Icon? GetIconForFilename(string fileName, bool small)
         {
-            SHFILEINFO shinfo = new SHFILEINFO();
+            var shinfo = new SHFILEINFO();
 
             if (small)
             {
@@ -97,7 +97,7 @@ namespace ManagedWinapi
 
             if (shinfo.hIcon == IntPtr.Zero) return null;
 
-            System.Drawing.Icon myIcon =
+            var myIcon =
                    Icon.FromHandle(shinfo.hIcon);
             return myIcon;
         }
@@ -112,7 +112,7 @@ namespace ManagedWinapi
             uint high;
             uint low;
             low = GetCompressedFileSize(filename, out high);
-            int error = Marshal.GetLastWin32Error();
+            var error = Marshal.GetLastWin32Error();
             if (error == 32)
             {
                 return (ulong)new FileInfo(filename).Length;
@@ -130,7 +130,7 @@ namespace ManagedWinapi
         public static uint GetClusterSize(string filename)
         {
             uint sectors, bytes, dummy;
-            string? drive = Path.GetPathRoot(filename);
+            var drive = Path.GetPathRoot(filename);
             if (!GetDiskFreeSpace(drive, out sectors, out bytes, out dummy, out dummy))
             {
                 throw new Win32Exception(Marshal.GetLastWin32Error());

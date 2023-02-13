@@ -60,13 +60,13 @@ namespace ManagedWinapi.Windows.Contents
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append("<" + type + ">");
                 if (current != null)
                     sb.Append(" (selected value: \"" + current + "\")");
                 sb.Append("\nAll values:\n");
-                int idx = 0;
-                foreach (string v in values)
+                var idx = 0;
+                foreach (var v in values)
                 {
                     if (selected == idx) sb.Append("*");
                     sb.Append("\t" + v + "\n");
@@ -81,11 +81,11 @@ namespace ManagedWinapi.Windows.Contents
         {
             get
             {
-                Dictionary<string, string?> result = new Dictionary<string, string?>();
+                var result = new Dictionary<string, string?>();
                 result.Add("SelectedValue", current);
                 result.Add("SelectedIndex", "" + selected);
                 result.Add("Count", "" + values.Length);
-                for (int i = 0; i < values.Length; i++)
+                for (var i = 0; i < values.Length; i++)
                 {
                     result.Add("Value" + i, values[i]);
                 }
@@ -140,8 +140,8 @@ namespace ManagedWinapi.Windows.Contents
 
         internal static string Repeat(char ch, int count)
         {
-            char[] tmp = new char[count];
-            for (int i = 0; i < tmp.Length; i++)
+            var tmp = new char[count];
+            for (var i = 0; i < tmp.Length; i++)
             {
                 tmp[i] = ch;
             }
@@ -165,9 +165,9 @@ namespace ManagedWinapi.Windows.Contents
         internal override WindowContent ParseContent(SystemWindow sw)
         {
             SystemListBox slb = SystemListBox.FromSystemWindow(sw)!;
-            int c = slb.Count;
-            string[] values = new string[c];
-            for (int i = 0; i < c; i++)
+            var c = slb.Count;
+            var values = new string[c];
+            for (var i = 0; i < c; i++)
             {
                 values[i] = slb[i];
             }
@@ -190,9 +190,9 @@ namespace ManagedWinapi.Windows.Contents
         internal override WindowContent ParseContent(SystemWindow sw)
         {
             SystemComboBox slb = SystemComboBox.FromSystemWindow(sw)!;
-            int c = slb.Count;
-            string[] values = new string[c];
-            for (int i = 0; i < c; i++)
+            var c = slb.Count;
+            var values = new string[c];
+            for (var i = 0; i < c; i++)
             {
                 values[i] = slb[i];
             }
@@ -206,16 +206,16 @@ namespace ManagedWinapi.Windows.Contents
         internal override bool CanParseContent(SystemWindow sw)
         {
             uint LVM_GETITEMCOUNT = (0x1000 + 4);
-            int cnt = sw.SendGetMessage(LVM_GETITEMCOUNT);
+            var cnt = sw.SendGetMessage(LVM_GETITEMCOUNT);
             return cnt != 0 || sw.ClassName == "SysListView32";
         }
 
         internal override WindowContent ParsePreviewContent(SystemWindow sw)
         {
             uint LVM_GETITEMCOUNT = (0x1000 + 4);
-            int cnt = sw.SendGetMessage(LVM_GETITEMCOUNT);
+            var cnt = sw.SendGetMessage(LVM_GETITEMCOUNT);
             if (cnt == 0 && sw.ClassName != "SysListView32") throw new Exception();
-            SystemAccessibleObject o = SystemAccessibleObject.FromWindow(sw, AccessibleObjectID.OBJID_CLIENT);
+            var o = SystemAccessibleObject.FromWindow(sw, AccessibleObjectID.OBJID_CLIENT);
             if (o.RoleIndex == 33)
             {
                 return new ListContent("DetailsListView", -1, null, new string[0]);
@@ -229,7 +229,7 @@ namespace ManagedWinapi.Windows.Contents
         internal override WindowContent ParseContent(SystemWindow sw)
         {
             uint LVM_GETITEMCOUNT = (0x1000 + 4);
-            int cnt = sw.SendGetMessage(LVM_GETITEMCOUNT);
+            var cnt = sw.SendGetMessage(LVM_GETITEMCOUNT);
             if (cnt == 0 && sw.ClassName != "SysListView32") throw new Exception();
             try
             {
@@ -240,20 +240,20 @@ namespace ManagedWinapi.Windows.Contents
                 if (columns.Length > 0)
                 {
                     hdr = new string[columns.Length];
-                    for (int i = 0; i < hdr.Length; i++)
+                    for (var i = 0; i < hdr.Length; i++)
                     {
                         hdr[i] = columns[i].Title;
                     }
                 }
-                int itemCount = slv.Count;
-                List<string> values = new List<string>();
-                for (int i = 0; i < itemCount; i++)
+                var itemCount = slv.Count;
+                var values = new List<string>();
+                for (var i = 0; i < itemCount; i++)
                 {
                     SystemListViewItem item = slv[i];
-                    string name = item.Title;
+                    var name = item.Title;
                     if (hdr != null)
                     {
-                        for (int j = 1; j < hdr.Length; j++)
+                        for (var j = 1; j < hdr.Length; j++)
                         {
                             SystemListViewItem subitem = slv[i, j];
                             name += "\t" + subitem.Title;
@@ -264,7 +264,7 @@ namespace ManagedWinapi.Windows.Contents
                 if (hdr != null)
                 {
                     string lines = "", headers = "";
-                    foreach (string h in hdr)
+                    foreach (var h in hdr)
                     {
                         if (lines.Length > 0) lines += "\t";
                         if (headers.Length > 0) headers += "\t";
@@ -284,20 +284,20 @@ namespace ManagedWinapi.Windows.Contents
             {
                 // fallback to slower accessible object method
             }
-            SystemAccessibleObject o = SystemAccessibleObject.FromWindow(sw, AccessibleObjectID.OBJID_CLIENT);
+            var o = SystemAccessibleObject.FromWindow(sw, AccessibleObjectID.OBJID_CLIENT);
             if (o.RoleIndex == 33)
             {
                 // are there column headers?
-                int cs = o.Children.Length;
+                var cs = o.Children.Length;
                 string[]? hdr = null;
                 if (cs > 0)
                 {
                     SystemAccessibleObject headers = o.Children[cs - 1];
                     if (headers.RoleIndex == 9 && headers.Window != sw)
                     {
-                        SystemAccessibleObject hdrL = SystemAccessibleObject.FromWindow(headers.Window, AccessibleObjectID.OBJID_CLIENT);
+                        var hdrL = SystemAccessibleObject.FromWindow(headers.Window, AccessibleObjectID.OBJID_CLIENT);
                         hdr = new string[hdrL.Children.Length];
-                        for (int i = 0; i < hdr.Length; i++)
+                        for (var i = 0; i < hdr.Length; i++)
                         {
                             if (hdrL.Children[i].RoleIndex != 25)
                             {
@@ -312,31 +312,31 @@ namespace ManagedWinapi.Windows.Contents
                         }
                     }
                 }
-                List<string> values = new List<string>();
-                for (int i = 0; i < cs; i++)
+                var values = new List<string>();
+                for (var i = 0; i < cs; i++)
                 {
                     if (o.Children[i].RoleIndex == 34)
                     {
-                        string name = o.Children[i].Name;
+                        var name = o.Children[i].Name;
                         if (hdr != null)
                         {
                             try
                             {
-                                string? cols = o.Children[i].Description;
+                                var cols = o.Children[i].Description;
                                 if (cols != null || values.Count != 0)
                                 {
-                                    string tmpCols = "; " + cols;
-                                    List<string> usedHdr = new List<string>();
-                                    foreach (string header in hdr)
+                                    var tmpCols = "; " + cols;
+                                    var usedHdr = new List<string>();
+                                    foreach (var header in hdr)
                                     {
-                                        string h = "; " + header + ": ";
+                                        var h = "; " + header + ": ";
                                         if (tmpCols.Contains(h))
                                         {
                                             usedHdr.Add(header);
                                             tmpCols = tmpCols.Substring(tmpCols.IndexOf(h) + h.Length);
                                         }
                                     }
-                                    foreach (string header in hdr)
+                                    foreach (var header in hdr)
                                     {
                                         name += "\t";
                                         if (usedHdr.Count > 0 && usedHdr[0] == header)
@@ -347,7 +347,7 @@ namespace ManagedWinapi.Windows.Contents
                                             string elem;
                                             if (usedHdr.Count > 1)
                                             {
-                                                int pos = cols.IndexOf("; " + usedHdr[1] + ": ");
+                                                var pos = cols.IndexOf("; " + usedHdr[1] + ": ");
                                                 elem = cols.Substring(0, pos);
                                                 cols = cols.Substring(pos + 2);
                                             }
@@ -382,7 +382,7 @@ namespace ManagedWinapi.Windows.Contents
                 if (hdr != null)
                 {
                     string lines = "", headers = "";
-                    foreach (string h in hdr)
+                    foreach (var h in hdr)
                     {
                         if (lines.Length > 0) lines += "\t";
                         if (headers.Length > 0) headers += "\t";
@@ -411,13 +411,13 @@ namespace ManagedWinapi.Windows.Contents
 
         internal override bool CanParseContent(SystemWindow sw)
         {
-            int cnt = sw.SendGetMessage(TVM_GETCOUNT, 0);
+            var cnt = sw.SendGetMessage(TVM_GETCOUNT, 0);
             return cnt != 0 || sw.ClassName == "SysTreeView32";
         }
 
         internal override WindowContent ParsePreviewContent(SystemWindow sw)
         {
-            SystemAccessibleObject sao = SystemAccessibleObject.FromWindow(sw, AccessibleObjectID.OBJID_CLIENT);
+            var sao = SystemAccessibleObject.FromWindow(sw, AccessibleObjectID.OBJID_CLIENT);
             if (sao.RoleIndex == 35)
             {
                 return new ListContent("TreeView", -1, null, new string[0]);
@@ -427,11 +427,11 @@ namespace ManagedWinapi.Windows.Contents
 
         internal override WindowContent ParseContent(SystemWindow sw)
         {
-            SystemAccessibleObject sao = SystemAccessibleObject.FromWindow(sw, AccessibleObjectID.OBJID_CLIENT);
+            var sao = SystemAccessibleObject.FromWindow(sw, AccessibleObjectID.OBJID_CLIENT);
             if (sao.RoleIndex == 35)
             {
-                List<string> treeNodes = new List<string>();
-                int selected = -1;
+                var treeNodes = new List<string>();
+                var selected = -1;
                 foreach (SystemAccessibleObject n in sao.Children)
                 {
                     if (n.RoleIndex == 36)

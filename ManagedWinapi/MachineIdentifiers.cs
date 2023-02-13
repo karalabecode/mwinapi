@@ -91,7 +91,7 @@ namespace ManagedWinapi
     {
       get
       {
-        int objectAttributes = 0;
+        var objectAttributes = 0;
         IntPtr policyHandle;
         IntPtr pInfo;
         POLICY_ACCOUNT_DOMAIN_INFO info;
@@ -99,7 +99,7 @@ namespace ManagedWinapi
             out policyHandle);
         LsaQueryInformationPolicy(policyHandle, PolicyAccountDomainInformation, out pInfo);
         info = (POLICY_ACCOUNT_DOMAIN_INFO)Marshal.PtrToStructure(pInfo, typeof(POLICY_ACCOUNT_DOMAIN_INFO))!;
-        SecurityIdentifier sid = new SecurityIdentifier(info.DomainSid);
+        var sid = new SecurityIdentifier(info.DomainSid);
         LsaFreeMemory(ref info);
         LsaClose(policyHandle);
         return sid;
@@ -115,10 +115,10 @@ namespace ManagedWinapi
       get
       {
         WKSTA_INFO_100 wkstaInfo;
-        int result = NetWkstaGetInfo(null, 100, out wkstaInfo);
+        var result = NetWkstaGetInfo(null, 100, out wkstaInfo);
         if (result != 0)
           throw new Win32Exception(result);
-        string? domainName = wkstaInfo.wki100_langroup;
+        var domainName = wkstaInfo.wki100_langroup;
         NetApiBufferFree(wkstaInfo);
         return domainName;
       }
@@ -132,7 +132,7 @@ namespace ManagedWinapi
     {
       get
       {
-        IPGlobalProperties ipGlobalProps = IPGlobalProperties.GetIPGlobalProperties();
+        var ipGlobalProps = IPGlobalProperties.GetIPGlobalProperties();
         return ipGlobalProps.DomainName;
       }
     }
@@ -169,7 +169,7 @@ namespace ManagedWinapi
     {
       get
       {
-        List<string> result = new List<string>();
+        var result = new List<string>();
         foreach (ManagementObject mo in new ManagementClass("Win32_NetworkAdapterConfiguration").GetInstances())
         {
           if ((bool)mo["IPEnabled"] == true)
@@ -206,10 +206,10 @@ namespace ManagedWinapi
     {
       get
       {
-        Dictionary<string, string?> result = new Dictionary<string, string?>();
-        foreach (string drive in Directory.GetLogicalDrives())
+        var result = new Dictionary<string, string?>();
+        foreach (var drive in Directory.GetLogicalDrives())
         {
-          ManagementObject disk =
+          var disk =
               new ManagementObject("win32_logicaldisk.deviceid=\"" +
               drive.Substring(0, 2) + "\"");
           disk.Get();
@@ -227,7 +227,7 @@ namespace ManagedWinapi
     {
       get
       {
-        List<string> result = new List<string>();
+        var result = new List<string>();
         foreach (ManagementObject mo in new ManagementClass("Win32_Processor").GetInstances())
         {
           result.Add(mo.Properties["ProcessorId"].Value.ToString()!);

@@ -50,7 +50,7 @@ namespace ManagedWinapi.Windows.Contents
         {
             get
             {
-                string s = strict ? " <TextBox>" : "";
+                var s = strict ? " <TextBox>" : "";
                 if (text.IndexOf("\n") != -1)
                     return "<MultiLine>" + s;
                 else if (password)
@@ -77,7 +77,7 @@ namespace ManagedWinapi.Windows.Contents
         {
             get
             {
-                Dictionary<string, string?> result = new Dictionary<string, string?>();
+                var result = new Dictionary<string, string?>();
                 result.Add("Password", password ? "True" : "False");
                 result.Add("MultiLine", text.IndexOf('\n') != -1 ? "True" : "False");
                 result.Add("Text", text);

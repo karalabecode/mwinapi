@@ -70,9 +70,9 @@ namespace ManagedWinapi.Hooks
         {
             if (code == HC_ACTION)
             {
-                KBDLLHOOKSTRUCT llh = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT))!;
-                bool handled = false;
-                int msg = (int)wParam;
+                var llh = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT))!;
+                var handled = false;
+                var msg = (int)wParam;
                 if (KeyIntercepted != null)
                 {
                     KeyIntercepted(msg, llh.vkCode, llh.scanCode, llh.flags, llh.time, llh.dwExtraInfo, ref handled);
@@ -117,11 +117,11 @@ namespace ManagedWinapi.Hooks
                     }
                     else
                     {
-                        short dummy = new KeyboardKey(Keys.Capital).State; // will refresh CAPS LOCK state for current thread
-                        byte[] kbdState = new byte[256];
+                        var dummy = new KeyboardKey(Keys.Capital).State; // will refresh CAPS LOCK state for current thread
+                        var kbdState = new byte[256];
                         ApiHelper.FailIfZero(GetKeyboardState(kbdState));
-                        StringBuilder buff = new StringBuilder(64);
-                        int length = ToUnicode((int)llh.vkCode, llh.scanCode, kbdState, buff, 64, 0);
+                        var buff = new StringBuilder(64);
+                        var length = ToUnicode((int)llh.vkCode, llh.scanCode, kbdState, buff, 64, 0);
                         if (length == -1)
                         {
                             currentDeadChar = buff[0];
@@ -217,11 +217,11 @@ namespace ManagedWinapi.Hooks
         {
             if (code == HC_ACTION)
             {
-                MSLLHOOKSTRUCT llh = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT))!;
+                var llh = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT))!;
 
                 fireMouseEvents(wParam, llh.pt, llh.mouseData);
 
-                bool handled = false;
+                var handled = false;
                 if (MouseIntercepted != null)
                 {
                     MouseIntercepted((int)wParam, llh.pt, llh.mouseData, llh.flags, llh.time, llh.dwExtraInfo, ref handled);

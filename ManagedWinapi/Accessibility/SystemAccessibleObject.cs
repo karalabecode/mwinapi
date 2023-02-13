@@ -61,7 +61,7 @@ namespace ManagedWinapi.Accessibility
             {
                 try
                 {
-                    object realChild = iacc.get_accChild(childID);
+                    var realChild = iacc.get_accChild(childID);
                     if (realChild != null)
                     {
                         iacc = (IAccessible)realChild;
@@ -97,7 +97,7 @@ namespace ManagedWinapi.Accessibility
         [CLSCompliant(false)]
         public static SystemAccessibleObject FromWindow(SystemWindow? window, AccessibleObjectID objectID)
         {
-            IAccessible iacc = (IAccessible)AccessibleObjectFromWindow(window == null ? IntPtr.Zero : window.HWnd, (uint)objectID, new Guid("{618736E0-3C3D-11CF-810C-00AA00389B71}"));
+            var iacc = (IAccessible)AccessibleObjectFromWindow(window == null ? IntPtr.Zero : window.HWnd, (uint)objectID, new Guid("{618736E0-3C3D-11CF-810C-00AA00389B71}"));
             return new SystemAccessibleObject(iacc, 0);
         }
 
@@ -147,8 +147,8 @@ namespace ManagedWinapi.Accessibility
         /// </summary>
         public static string RoleToString(int roleNumber)
         {
-            StringBuilder sb = new StringBuilder(1024);
-            uint result = GetRoleText((uint)roleNumber, sb, 1024);
+            var sb = new StringBuilder(1024);
+            var result = GetRoleText((uint)roleNumber, sb, 1024);
             if (result == 0) throw new Exception("Invalid role number");
             return sb.ToString();
         }
@@ -160,9 +160,9 @@ namespace ManagedWinapi.Accessibility
         public static string StateToString(int stateNumber)
         {
             if (stateNumber == 0) return "None";
-            int lowBit = stateNumber & -stateNumber;
-            int restBits = stateNumber - lowBit;
-            string s1 = StateBitToString(lowBit);
+            var lowBit = stateNumber & -stateNumber;
+            var restBits = stateNumber - lowBit;
+            var s1 = StateBitToString(lowBit);
             if (restBits == 0) return s1;
             return StateToString(restBits) + ", " + s1;
         }
@@ -172,8 +172,8 @@ namespace ManagedWinapi.Accessibility
         /// </summary>
         public static string StateBitToString(int stateBit)
         {
-            StringBuilder sb = new StringBuilder(1024);
-            uint result = GetStateText((uint)stateBit, sb, 1024);
+            var sb = new StringBuilder(1024);
+            var result = GetStateText((uint)stateBit, sb, 1024);
             if (result == 0) throw new Exception("Invalid role number");
             return sb.ToString();
         }
@@ -232,7 +232,7 @@ namespace ManagedWinapi.Accessibility
         {
             get
             {
-                object role = Role;
+                var role = Role;
                 if (role is int)
                 {
                     return (int)role;
@@ -251,7 +251,7 @@ namespace ManagedWinapi.Accessibility
         {
             get
             {
-                object role = Role;
+                var role = Role;
                 if (role is int)
                 {
                     return RoleToString((int)role);
@@ -397,7 +397,7 @@ namespace ManagedWinapi.Accessibility
                 }
                 catch { }
                 if (childID != 0) return new SystemAccessibleObject(iacc, 0);
-                IAccessible p = (IAccessible)iacc.accParent;
+                var p = (IAccessible)iacc.accParent;
                 if (p == null) return null;
                 return new SystemAccessibleObject(p, 0);
             }
@@ -468,10 +468,10 @@ namespace ManagedWinapi.Accessibility
                 if (sel == null) return new SystemAccessibleObject[0];
                 if (sel is IEnumVARIANT)
                 {
-                    IEnumVARIANT e = (IEnumVARIANT)sel;
+                    var e = (IEnumVARIANT)sel;
                     e.Reset();
-                    List<SystemAccessibleObject> retval = new List<SystemAccessibleObject>();
-                    object[] tmp = new object[1];
+                    var retval = new List<SystemAccessibleObject>();
+                    var tmp = new object[1];
                     while (e.Next(1, tmp, IntPtr.Zero) == 0)
                     {
                         if (tmp[0] is int && (int)tmp[0] < 0) break;
@@ -526,15 +526,15 @@ namespace ManagedWinapi.Accessibility
                 if (childID != 0) return new SystemAccessibleObject[0];
 
                 int cs = iacc.accChildCount, csReal;
-                object[] children = new object[cs];
+                var children = new object[cs];
 
-                uint result = AccessibleChildren(iacc, 0, cs, children, out csReal);
+                var result = AccessibleChildren(iacc, 0, cs, children, out csReal);
                 if (result != 0 && result != 1)
                     return new SystemAccessibleObject[0];
                 if (csReal == 1 && children[0] is int && (int)children[0] < 0)
                     return new SystemAccessibleObject[0];
-                List<SystemAccessibleObject> values = new List<SystemAccessibleObject>();
-                for (int i = 0; i < children.Length; i++)
+                var values = new List<SystemAccessibleObject>();
+                for (var i = 0; i < children.Length; i++)
                 {
                     if (children[i] != null)
                     {
@@ -558,14 +558,14 @@ namespace ManagedWinapi.Accessibility
             if (childID != 0) return null;
 
             int cs = iacc.accChildCount, csReal;
-            object[] children = new object[1];
+            var children = new object[1];
 
-            uint result = AccessibleChildren(iacc, index, 1, children, out csReal);
+            var result = AccessibleChildren(iacc, index, 1, children, out csReal);
             if (result != 0 && result != 1)
                 return null;
             if (csReal == 1 && children[0] is int && (int)children[0] < 0)
                 return null;
-            List<SystemAccessibleObject> values = new List<SystemAccessibleObject>();
+            var values = new List<SystemAccessibleObject>();
             if (children[0] != null)
             {
                 try
@@ -618,7 +618,7 @@ namespace ManagedWinapi.Accessibility
             {
                 return false;
             }
-            SystemAccessibleObject? sao = obj as SystemAccessibleObject;
+            var sao = obj as SystemAccessibleObject;
             return Equals(sao);
         }
 
@@ -639,8 +639,8 @@ namespace ManagedWinapi.Accessibility
             try
             {
                 if (ia1.accChildCount != ia2.accChildCount) return false;
-                SystemAccessibleObject sa1 = new SystemAccessibleObject(ia1, 0);
-                SystemAccessibleObject sa2 = new SystemAccessibleObject(ia2, 0);
+                var sa1 = new SystemAccessibleObject(ia1, 0);
+                var sa2 = new SystemAccessibleObject(ia2, 0);
                 if (sa1.Window.HWnd != sa2.Window.HWnd) return false;
                 if (sa1.Location != sa2.Location) return false;
                 if (sa1.DefaultAction != sa2.DefaultAction) return false;
@@ -658,7 +658,7 @@ namespace ManagedWinapi.Accessibility
             {
                 return false;
             }
-            bool de = DeepEquals((IAccessible)ia1.accParent, (IAccessible)ia2.accParent);
+            var de = DeepEquals((IAccessible)ia1.accParent, (IAccessible)ia2.accParent);
             return de;
         }
 

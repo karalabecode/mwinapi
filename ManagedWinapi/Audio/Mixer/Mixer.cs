@@ -56,7 +56,7 @@ namespace ManagedWinapi.Audio.Mixer
                 throw new ArgumentException();
             IntPtr hMixer = IntPtr.Zero;
             EventDispatchingNativeWindow ednw = EventDispatchingNativeWindow.Instance;
-            int error = mixerOpen(ref hMixer, index, ednw.Handle, IntPtr.Zero, CALLBACK_WINDOW);
+            var error = mixerOpen(ref hMixer, index, ednw.Handle, IntPtr.Zero, CALLBACK_WINDOW);
             if (error != 0)
             {
                 throw new Win32Exception("Could not load mixer: " + error);
@@ -93,7 +93,7 @@ namespace ManagedWinapi.Audio.Mixer
             if (!createEvents) return;
             if (m.Msg == MM_MIXM_CONTROL_CHANGE && m.WParam == hMixer)
             {
-                int ctrlID = m.LParam.ToInt32();
+                var ctrlID = m.LParam.ToInt32();
                 MixerControl? c = FindControl(ctrlID);
                 if (c != null)
                 {
@@ -106,7 +106,7 @@ namespace ManagedWinapi.Audio.Mixer
             }
             else if (m.Msg == MM_MIXM_LINE_CHANGE && m.WParam == hMixer)
             {
-                int lineID = m.LParam.ToInt32();
+                var lineID = m.LParam.ToInt32();
                 MixerLine? l = FindLine(lineID);
                 if (l != null)
                 {
@@ -163,9 +163,9 @@ namespace ManagedWinapi.Audio.Mixer
             {
                 if (destLines == null)
                 {
-                    int dlc = DestinationLineCount;
-                    List<DestinationLine> l = new List<DestinationLine>(dlc);
-                    for (int i = 0; i < dlc; i++)
+                    var dlc = DestinationLineCount;
+                    var l = new List<DestinationLine>(dlc);
+                    for (var i = 0; i < dlc; i++)
                     {
                         l.Add(DestinationLine.GetLine(this, i));
                     }
