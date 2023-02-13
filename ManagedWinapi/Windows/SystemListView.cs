@@ -97,9 +97,11 @@ namespace ManagedWinapi.Windows
         /// <param name="focused">if set to <c>true</c> the item will be focused.</param>
         public void SetItemFocusedState(int rowIndex, bool focused)
         {
-            var lvi = new LVITEM();
-            lvi.stateMask = (uint)(ListViewItemState.LVIS_FOCUSED);
-            lvi.state = focused ? (uint)(ListViewItemState.LVIS_FOCUSED) : 0;
+            var lvi = new LVITEM
+            {
+                stateMask = (uint)(ListViewItemState.LVIS_FOCUSED),
+                state = focused ? (uint)(ListViewItemState.LVIS_FOCUSED) : 0
+            };
             var lc = ProcessMemoryChunk.AllocStruct(sw.Process!, lvi);
             SystemWindow.SendMessage(new HandleRef(sw, sw.HWnd), LVM_SETITEMSTATE, new IntPtr(rowIndex), lc.Location);
             lc.Dispose();
@@ -112,9 +114,11 @@ namespace ManagedWinapi.Windows
         /// <param name="selected">if set to <c>true</c> the item will be selected.</param>
         public void SetItemSelectedState(int rowIndex, bool selected)
         {
-            var lvi = new LVITEM();
-            lvi.stateMask = (uint)(ListViewItemState.LVIS_SELECTED);
-            lvi.state = selected ? (uint)(ListViewItemState.LVIS_SELECTED) : 0;
+            var lvi = new LVITEM
+            {
+                stateMask = (uint)(ListViewItemState.LVIS_SELECTED),
+                state = selected ? (uint)(ListViewItemState.LVIS_SELECTED) : 0
+            };
             var lc = ProcessMemoryChunk.AllocStruct(sw.Process!, lvi);
             SystemWindow.SendMessage(new HandleRef(sw, sw.HWnd), LVM_SETITEMSTATE, new IntPtr(rowIndex), lc.Location);
             lc.Dispose();
@@ -150,12 +154,14 @@ namespace ManagedWinapi.Windows
         {
             get
             {
-                var lvi = new LVITEM();
-                lvi.cchTextMax = 300;
-                lvi.iItem = index;
-                lvi.iSubItem = subIndex;
-                lvi.stateMask = 0xffffffff;
-                lvi.mask = LVIF_IMAGE | LVIF_STATE | LVIF_TEXT;
+                var lvi = new LVITEM
+                {
+                    cchTextMax = 300,
+                    iItem = index,
+                    iSubItem = subIndex,
+                    stateMask = 0xffffffff,
+                    mask = LVIF_IMAGE | LVIF_STATE | LVIF_TEXT
+                };
                 var tc = ProcessMemoryChunk.Alloc(sw.Process!, 301);
                 lvi.pszText = tc.Location;
                 var lc = ProcessMemoryChunk.AllocStruct(sw.Process!, lvi);
@@ -185,9 +191,11 @@ namespace ManagedWinapi.Windows
             get
             {
                 var result = new List<SystemListViewColumn>();
-                var lvc = new LVCOLUMN();
-                lvc.cchTextMax = 300;
-                lvc.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+                var lvc = new LVCOLUMN
+                {
+                    cchTextMax = 300,
+                    mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH
+                };
                 var tc = ProcessMemoryChunk.Alloc(sw.Process!, 301);
                 lvc.pszText = tc.Location;
                 var lc = ProcessMemoryChunk.AllocStruct(sw.Process!, lvc);

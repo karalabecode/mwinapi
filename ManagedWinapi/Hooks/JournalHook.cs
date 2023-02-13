@@ -120,12 +120,14 @@ namespace ManagedWinapi.Hooks
         [CLSCompliant(false)]
         public JournalMessage(IntPtr hWnd, uint message, uint paramL, uint paramH, uint time)
         {
-            msg = new JournalHook.EVENTMSG();
-            msg.hWnd = hWnd;
-            msg.message = message;
-            msg.paramL = paramL;
-            msg.paramH = paramH;
-            msg.time = 0;
+            msg = new JournalHook.EVENTMSG
+            {
+                hWnd = hWnd,
+                message = message,
+                paramL = paramL,
+                paramH = paramH,
+                time = 0
+            };
         }
 
         /// <summary>

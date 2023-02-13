@@ -122,11 +122,13 @@ namespace ManagedWinapi.Windows
             get
             {
                 var tc = ProcessMemoryChunk.Alloc(sw.Process!, 2001);
-                var tvi = new TVITEM();
-                tvi.hItem = handle;
-                tvi.mask = TVIF_TEXT;
-                tvi.cchTextMax = 2000;
-                tvi.pszText = tc.Location;
+                var tvi = new TVITEM
+                {
+                    hItem = handle,
+                    mask = TVIF_TEXT,
+                    cchTextMax = 2000,
+                    pszText = tc.Location
+                };
                 var ic = ProcessMemoryChunk.AllocStruct(sw.Process!, tvi);
                 SystemWindow.SendMessage(new HandleRef(sw, sw.HWnd), TVM_GETITEM, IntPtr.Zero, ic.Location);
                 tvi = (TVITEM)ic.ReadToStructure(0, typeof(TVITEM))!;

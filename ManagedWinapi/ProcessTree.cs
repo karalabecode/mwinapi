@@ -39,8 +39,10 @@ namespace ManagedWinapi
         /// </summary>
         public ProcessTree()
         {
-            var procEntry = new PROCESSENTRY32();
-            procEntry.dwSize = (uint)Marshal.SizeOf(typeof(PROCESSENTRY32));
+            var procEntry = new PROCESSENTRY32
+            {
+                dwSize = (uint)Marshal.SizeOf(typeof(PROCESSENTRY32))
+            };
 
             IntPtr handleToSnapshot = CreateToolhelp32Snapshot((uint)SnapshotFlags.Process, 0);
             if (!Process32First(handleToSnapshot, ref procEntry))
