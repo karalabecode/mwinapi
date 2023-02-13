@@ -40,7 +40,7 @@ namespace ManagedWinapi
         public ProcessTree()
         {
             PROCESSENTRY32 procEntry = new PROCESSENTRY32();
-            procEntry.dwSize = (UInt32)Marshal.SizeOf(typeof(PROCESSENTRY32));
+            procEntry.dwSize = (uint)Marshal.SizeOf(typeof(PROCESSENTRY32));
 
             IntPtr handleToSnapshot = CreateToolhelp32Snapshot((uint)SnapshotFlags.Process, 0);
             if (!Process32First(handleToSnapshot, ref procEntry))
@@ -60,7 +60,7 @@ namespace ManagedWinapi
         /// process exists.
         /// </summary>
         /// <param name="process">Process to find parent of</param>
-        public Process FindParent(Process process)
+        public Process? FindParent(Process process)
         {
             if (parents.ContainsKey(process.Id))
             {
@@ -126,13 +126,13 @@ namespace ManagedWinapi
             internal string szExeFile;
         }
 
-        [DllImport("kernel32", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern IntPtr CreateToolhelp32Snapshot(uint dwFlags, uint th32ProcessID);
 
-        [DllImport("kernel32", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern bool Process32First(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
 
-        [DllImport("kernel32", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern bool Process32Next(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
 
         [DllImport("kernel32.dll", SetLastError = true)]

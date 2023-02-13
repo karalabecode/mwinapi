@@ -105,7 +105,7 @@ namespace ManagedWinapi
     /// of the way in which the caret is prescribed; however, a mask must first
     /// be applied to the bitmap. This stores the result of the bitmap mask.
     /// </summary>
-    private Bitmap image;
+    private Bitmap? image;
 
     //-------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ namespace ManagedWinapi
     /// If the background colour of the Control changes, the colour mask
     /// needs to be reapplied to the original bitmap.
     /// </summary>
-    private Bitmap originalUserBitmap;
+    private Bitmap? originalUserBitmap;
 
     //-------------------------------------------------------------------------
 
@@ -122,7 +122,7 @@ namespace ManagedWinapi
     /// caret. The displayed color of the caret is dependant on the background
     /// colour of the control.
     /// </summary>
-    public Control ParentControl { get; set; }
+    public Control? ParentControl { get; set; }
 
     //-------------------------------------------------------------------------
 
@@ -131,7 +131,7 @@ namespace ManagedWinapi
     /// the caret will take have the usual block form. If the image height
     /// exceeds the <see cref="Control"/> height, it is automatically truncated.
     /// </summary>
-    public Bitmap CursorImage
+    public Bitmap? CursorImage
     {
       get
       {
@@ -272,25 +272,25 @@ namespace ManagedWinapi
         {
           pixelData.Enumerate((pixel) =>
           {
-            pixel.R ^= ParentControl.BackColor.R;
-            pixel.G ^= ParentControl.BackColor.G;
-            pixel.B ^= ParentControl.BackColor.B;
+            pixel.R ^= ParentControl!.BackColor.R;
+            pixel.G ^= ParentControl!.BackColor.G;
+            pixel.B ^= ParentControl!.BackColor.B;
           });
         }
       }
       else
       {
-        int caretHeight = this.height ?? ParentControl.Font.Height;
+        int caretHeight = this.height ?? ParentControl!.Font.Height;
         this.image = new Bitmap(Width, caretHeight);
         using (Graphics cursorGraphics = Graphics.FromImage(this.image))
         {
-          using (SolidBrush brush = new SolidBrush(XorColorMask(Color, ParentControl.BackColor)))
+          using (SolidBrush brush = new SolidBrush(XorColorMask(Color, ParentControl!.BackColor)))
           {
             cursorGraphics.FillRectangle(brush, 0, 0, Width, caretHeight);
           }
         }
       }
-      if (CreateCaret(ParentControl.Handle, this.image.GetHbitmap(), 0, 0))
+      if (CreateCaret(ParentControl!.Handle, this.image.GetHbitmap(), 0, 0))
       {
         ShowCaret(ParentControl.Handle);
       }
@@ -304,7 +304,7 @@ namespace ManagedWinapi
     /// </summary>
     /// <param name="sender">The parent control.</param>
     /// <param name="e">Event information; this is not used.</param>
-    private void OnFocus(object sender, EventArgs e)
+    private void OnFocus(object? sender, EventArgs e)
     {
       if (HasFocus)
       {
@@ -312,7 +312,7 @@ namespace ManagedWinapi
       }
       HasFocus = true;
       ParentControl = sender as Control;
-      DisplayCaret(ParentControl);
+      DisplayCaret(ParentControl!);
     }
 
     //-------------------------------------------------------------------------
@@ -322,7 +322,7 @@ namespace ManagedWinapi
     /// </summary>
     /// <param name="sender">The parent control.</param>
     /// <param name="e">Event information; not used.</param>
-    private void LostFocus(object sender, EventArgs e)
+    private void LostFocus(object? sender, EventArgs e)
     {
       if (HasFocus)
       {

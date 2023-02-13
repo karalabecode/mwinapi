@@ -114,7 +114,7 @@ namespace ManagedWinapi
         /// Convenience method to send keys with all modifiers disabled.
         /// </summary>
         /// <param name="keys">The keys to send</param>
-        public static void Send(String keys)
+        public static void Send(string keys)
         {
             using (new LockKeyResetter())
             {
@@ -127,7 +127,7 @@ namespace ManagedWinapi
         /// <see cref="SendKeys.SendWait">SendKeys.SendWait</see>) with all modifiers disabled.
         /// </summary>
         /// <param name="keys"></param>
-        public static void SendWait(String keys)
+        public static void SendWait(string keys)
         {
             using (new LockKeyResetter())
             {

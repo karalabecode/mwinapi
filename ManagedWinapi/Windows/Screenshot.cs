@@ -54,7 +54,7 @@ namespace ManagedWinapi.Windows
         /// <param name="keepShape">Whether to keep the shape (transparency region) of the window.</param>
         public static Bitmap TakeScreenshot(SystemWindow window, bool clientAreaOnly, bool includeCursor, bool keepShape)
         {
-            Region shape = null;
+            Region? shape = null;
             if (keepShape)
             {
                 shape = window.Region;
@@ -74,11 +74,11 @@ namespace ManagedWinapi.Windows
         /// <param name="keepShape">Whether to keep the shape (transparency region) of the window.</param>
         public static Bitmap TakeScreenshot(SystemAccessibleObject accessibleObject, bool includeCursor, bool keepShape)
         {
-            Region shape = null;
+            Region? shape = null;
             if (keepShape)
             {
                 shape = accessibleObject.Window.Region;
-                shape.Translate(accessibleObject.Window.Rectangle.Left - accessibleObject.Location.Left, accessibleObject.Window.Rectangle.Top - accessibleObject.Location.Top);
+                shape?.Translate(accessibleObject.Window.Rectangle.Left - accessibleObject.Location.Left, accessibleObject.Window.Rectangle.Top - accessibleObject.Location.Top);
             }
             return TakeScreenshot(accessibleObject.Location, includeCursor, shape);
         }
@@ -91,7 +91,7 @@ namespace ManagedWinapi.Windows
         /// <param name="rect">Rectangle to include.</param>
         /// <param name="includeCursor">Whether to include the mouse cursor.</param>
         /// <param name="shape">Shape (region) used for clipping.</param>
-        public static Bitmap TakeScreenshot(Rectangle rect, bool includeCursor, Region shape)
+        public static Bitmap TakeScreenshot(Rectangle rect, bool includeCursor, Region? shape)
         {
             Bitmap result = new Bitmap(rect.Width, rect.Height);
 
@@ -631,8 +631,8 @@ namespace ManagedWinapi.Windows
         [StructLayout(LayoutKind.Sequential)]
         struct CURSORINFO
         {
-            public Int32 cbSize;
-            public Int32 flags;
+            public int cbSize;
+            public int flags;
             public IntPtr hCursor;
             public POINT ptScreenPos;
         }
@@ -640,7 +640,7 @@ namespace ManagedWinapi.Windows
         [DllImport("user32.dll")]
         static extern int GetCursorInfo(out CURSORINFO pci);
 
-        private const Int32 CURSOR_SHOWING = 0x00000001;
+        private const int CURSOR_SHOWING = 0x00000001;
 
         [DllImport("user32.dll")]
         static extern int DrawIcon(IntPtr hDC, int X, int Y, IntPtr hIcon);

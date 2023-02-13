@@ -48,7 +48,7 @@ namespace ManagedWinapi.Hooks
         /// <summary>
         /// Occurs when the hook's callback is called.
         /// </summary>
-        public event HookCallback Callback;
+        public event HookCallback? Callback;
 
         /// <summary>
         /// Represents a method that handles a callback from a hook.
@@ -125,7 +125,7 @@ namespace ManagedWinapi.Hooks
             }
             else if (global)
             {
-                hHook = SetWindowsHookEx(type, delegt, System.Diagnostics.Process.GetCurrentProcess().MainModule.BaseAddress, 0);
+                hHook = SetWindowsHookEx(type, delegt, Process.GetCurrentProcess().MainModule!.BaseAddress, 0);
             }
             else
             {
@@ -232,7 +232,7 @@ namespace ManagedWinapi.Hooks
         /// <see cref="MSGOccurred"/> event.
         /// </summary>
         [Obsolete("Use MSGOccurred instead")]
-        public event MessageCallback MessageOccurred;
+        public event MessageCallback? MessageOccurred;
 
         /// <summary>
         /// Represents a method that handles a message from a message hook. Since this callback
@@ -246,7 +246,7 @@ namespace ManagedWinapi.Hooks
         /// <summary>
         /// Called when a message has been intercepted.
         /// </summary>
-        public event MSGCallback MSGOccurred;
+        public event MSGCallback? MSGOccurred;
 
         /// <summary>
         /// Represents a method that handles a message from a message hook.
@@ -285,7 +285,7 @@ namespace ManagedWinapi.Hooks
         public LocalMessageHook()
             : base(HookType.WH_GETMESSAGE, false, false)
         {
-            base.Callback += MessageHookCallback;
+            Callback += MessageHookCallback;
         }
 
         private int MessageHookCallback(int code, IntPtr wParam, IntPtr lParam, ref bool callNext)
@@ -294,12 +294,12 @@ namespace ManagedWinapi.Hooks
             {
                 if (MSGOccurred != null)
                 {
-                    MSG msg = (MSG)Marshal.PtrToStructure(lParam, typeof(MSG));
+                    MSG msg = (MSG)Marshal.PtrToStructure(lParam, typeof(MSG))!;
                     MSGOccurred(msg);
                 }
                 if (MessageOccurred != null)
                 {
-                    Message msg = (Message)Marshal.PtrToStructure(lParam, typeof(MSG));
+                    Message msg = (Message)Marshal.PtrToStructure(lParam, typeof(MSG))!;
                     MessageOccurred(msg);
                 }
             }

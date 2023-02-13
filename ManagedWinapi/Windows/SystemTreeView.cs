@@ -34,7 +34,7 @@ namespace ManagedWinapi.Windows
         /// <summary>
         /// Get a SystemTreeView reference from a SystemWindow (which is a tree view)
         /// </summary>
-        public static SystemTreeView FromSystemWindow(SystemWindow sw)
+        public static SystemTreeView? FromSystemWindow(SystemWindow sw)
         {
             if (sw.SendGetMessage(TVM_GETCOUNT) == 0 && sw.ClassName != "SysTreeView32") return null;
             return new SystemTreeView(sw);
@@ -121,15 +121,15 @@ namespace ManagedWinapi.Windows
         {
             get
             {
-                ProcessMemoryChunk tc = ProcessMemoryChunk.Alloc(sw.Process, 2001);
+                ProcessMemoryChunk tc = ProcessMemoryChunk.Alloc(sw.Process!, 2001);
                 TVITEM tvi = new TVITEM();
                 tvi.hItem = handle;
                 tvi.mask = TVIF_TEXT;
                 tvi.cchTextMax = 2000;
                 tvi.pszText = tc.Location;
-                ProcessMemoryChunk ic = ProcessMemoryChunk.AllocStruct(sw.Process, tvi);
+                ProcessMemoryChunk ic = ProcessMemoryChunk.AllocStruct(sw.Process!, tvi);
                 SystemWindow.SendMessage(new HandleRef(sw, sw.HWnd), TVM_GETITEM, IntPtr.Zero, ic.Location);
-                tvi = (TVITEM)ic.ReadToStructure(0, typeof(TVITEM));
+                tvi = (TVITEM)ic.ReadToStructure(0, typeof(TVITEM))!;
                 if (tvi.pszText != tc.Location) MessageBox.Show(tvi.pszText + " != " + tc.Location);
                 string result = Encoding.Default.GetString(tc.Read());
                 if (result.IndexOf('\0') != -1) result = result.Substring(0, result.IndexOf('\0'));
@@ -154,15 +154,15 @@ namespace ManagedWinapi.Windows
         [StructLayout(LayoutKind.Sequential)]
         private struct TVITEM
         {
-            public UInt32 mask;
+            public uint mask;
             public IntPtr hItem;
-            public UInt32 state;
-            public UInt32 stateMask;
+            public uint state;
+            public uint stateMask;
             public IntPtr pszText;
-            public Int32 cchTextMax;
-            public Int32 iImage;
-            public Int32 iSelectedImage;
-            public Int32 cChildren;
+            public int cchTextMax;
+            public int iImage;
+            public int iSelectedImage;
+            public int cChildren;
             public IntPtr lParam;
         }
         #endregion

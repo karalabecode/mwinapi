@@ -31,7 +31,7 @@ namespace ManagedWinapi.Windows
         /// <summary>
         /// Get a SystemListBox reference from a SystemWindow (which is a list box)
         /// </summary>
-        public static SystemListBox FromSystemWindow(SystemWindow sw)
+        public static SystemListBox? FromSystemWindow(SystemWindow sw)
         {
             if (sw.SendGetMessage(LB_GETCOUNT) == 0) return null;
             return new SystemListBox(sw);
@@ -77,7 +77,7 @@ namespace ManagedWinapi.Windows
         /// <summary>
         /// The selected element in this list box.
         /// </summary>
-        public string SelectedItem
+        public string? SelectedItem
         {
             get
             {
@@ -126,7 +126,7 @@ namespace ManagedWinapi.Windows
         /// <summary>
         /// Get a SystemComboBox reference from a SystemWindow (which is a combo box)
         /// </summary>
-        public static SystemComboBox FromSystemWindow(SystemWindow sw)
+        public static SystemComboBox? FromSystemWindow(SystemWindow sw)
         {
             if (sw.SendGetMessage(CB_GETCOUNT) == 0) return null;
             return new SystemComboBox(sw);

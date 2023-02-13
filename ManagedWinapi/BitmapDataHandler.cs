@@ -141,7 +141,7 @@ namespace ManagedWinapi
     /// image when the <see cref="Dispose"/> or <see cref="Flush"/> is invoked
     /// on the bitmap handler.
     /// </summary>
-    public event EnumerationHandler Enumerator;
+    public event EnumerationHandler? Enumerator;
 
     //-------------------------------------------------------------------------
 
@@ -303,7 +303,6 @@ namespace ManagedWinapi
         Flush();
         Locked = false;
         Bitmap.UnlockBits(this.bitmapData);
-        pixelData = null;
       }
     }
 

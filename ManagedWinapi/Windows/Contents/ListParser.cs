@@ -30,11 +30,12 @@ namespace ManagedWinapi.Windows.Contents
     /// </summary>
     public class ListContent : WindowContent
     {
-        string type, current;
+        string type;
+        string? current;
         string[] values;
         int selected;
 
-        internal ListContent(string type, int selected, string current, string[] values)
+        internal ListContent(string type, int selected, string? current, string[] values)
         {
             this.type = type;
             this.selected = selected;
@@ -76,11 +77,11 @@ namespace ManagedWinapi.Windows.Contents
         }
 
         ///
-        public Dictionary<string, string> PropertyList
+        public Dictionary<string, string?> PropertyList
         {
             get
             {
-                Dictionary<string, string> result = new Dictionary<string, string>();
+                Dictionary<string, string?> result = new Dictionary<string, string?>();
                 result.Add("SelectedValue", current);
                 result.Add("SelectedIndex", "" + selected);
                 result.Add("Count", "" + values.Length);
@@ -96,7 +97,7 @@ namespace ManagedWinapi.Windows.Contents
         /// The value in this list or combo box that is selected.
         /// In a combo box, this value may not be in the list.
         /// </summary>
-        public String SelectedValue
+        public string? SelectedValue
         {
             get { return current; }
         }
@@ -157,13 +158,13 @@ namespace ManagedWinapi.Windows.Contents
 
         internal override WindowContent ParsePreviewContent(SystemWindow sw)
         {
-            SystemListBox slb = SystemListBox.FromSystemWindow(sw);
+            SystemListBox slb = SystemListBox.FromSystemWindow(sw)!;
             return new ListContent("ListBox", slb.SelectedIndex, slb.SelectedItem, new string[0]);
         }
 
         internal override WindowContent ParseContent(SystemWindow sw)
         {
-            SystemListBox slb = SystemListBox.FromSystemWindow(sw);
+            SystemListBox slb = SystemListBox.FromSystemWindow(sw)!;
             int c = slb.Count;
             string[] values = new string[c];
             for (int i = 0; i < c; i++)
@@ -188,7 +189,7 @@ namespace ManagedWinapi.Windows.Contents
 
         internal override WindowContent ParseContent(SystemWindow sw)
         {
-            SystemComboBox slb = SystemComboBox.FromSystemWindow(sw);
+            SystemComboBox slb = SystemComboBox.FromSystemWindow(sw)!;
             int c = slb.Count;
             string[] values = new string[c];
             for (int i = 0; i < c; i++)
@@ -232,9 +233,9 @@ namespace ManagedWinapi.Windows.Contents
             if (cnt == 0 && sw.ClassName != "SysListView32") throw new Exception();
             try
             {
-                SystemListView slv = SystemListView.FromSystemWindow(sw);
+                SystemListView slv = SystemListView.FromSystemWindow(sw)!;
                 // are there column headers?
-                string[] hdr = null;
+                string[]? hdr = null;
                 SystemListViewColumn[] columns = slv.Columns;
                 if (columns.Length > 0)
                 {
@@ -288,7 +289,7 @@ namespace ManagedWinapi.Windows.Contents
             {
                 // are there column headers?
                 int cs = o.Children.Length;
-                string[] hdr = null;
+                string[]? hdr = null;
                 if (cs > 0)
                 {
                     SystemAccessibleObject headers = o.Children[cs - 1];
@@ -321,9 +322,8 @@ namespace ManagedWinapi.Windows.Contents
                         {
                             try
                             {
-                                string cols = o.Children[i].Description;
-                                if (cols == null && values.Count == 0) { hdr = null; }
-                                else
+                                string? cols = o.Children[i].Description;
+                                if (cols != null || values.Count != 0)
                                 {
                                     string tmpCols = "; " + cols;
                                     List<string> usedHdr = new List<string>();
@@ -341,7 +341,7 @@ namespace ManagedWinapi.Windows.Contents
                                         name += "\t";
                                         if (usedHdr.Count > 0 && usedHdr[0] == header)
                                         {
-                                            if (!cols.StartsWith(header + ": "))
+                                            if (!cols!.StartsWith(header + ": "))
                                                 throw new Exception();
                                             cols = cols.Substring(header.Length + 1);
                                             string elem;
@@ -361,6 +361,8 @@ namespace ManagedWinapi.Windows.Contents
                                         }
                                     }
                                 }
+                                else
+                                { hdr = null; }
                             }
                             catch (COMException ex)
                             {
@@ -438,7 +440,7 @@ namespace ManagedWinapi.Windows.Contents
                         {
                             selected = treeNodes.Count;
                         }
-                        treeNodes.Add(ListContent.Repeat('\t', int.Parse(n.Value)) + n.Name);
+                        treeNodes.Add(ListContent.Repeat('\t', int.Parse(n.Value!)) + n.Name);
                     }
                 }
                 if (treeNodes.Count > 0)

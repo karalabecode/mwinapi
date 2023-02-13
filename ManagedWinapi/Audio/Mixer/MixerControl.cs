@@ -20,6 +20,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+
 using ManagedWinapi.Windows;
 
 namespace ManagedWinapi.Audio.Mixer
@@ -33,7 +34,7 @@ namespace ManagedWinapi.Audio.Mixer
         /// <summary>
         /// Occurs when the value of this control is changed
         /// </summary>
-        public EventHandler Changed;
+        public EventHandler? Changed;
 
         internal MIXERCONTROL ctrl;
         internal Mixer mx;
@@ -181,7 +182,7 @@ namespace ManagedWinapi.Audio.Mixer
             }
             for (int i = 0; i < controlCount; i++)
             {
-                mc[i] = (MIXERCONTROL)Marshal.PtrToStructure(new IntPtr(mlc.pamxctrl.ToInt64() + mxsize * i), typeof(MIXERCONTROL));
+                mc[i] = (MIXERCONTROL)Marshal.PtrToStructure(new IntPtr(mlc.pamxctrl.ToInt64() + mxsize * i), typeof(MIXERCONTROL))!;
             }
             Marshal.FreeCoTaskMem(mlc.pamxctrl);
             MixerControl[] result = new MixerControl[controlCount];
@@ -219,7 +220,7 @@ namespace ManagedWinapi.Audio.Mixer
         #region PInvoke Declarations
 
         [DllImport("winmm.dll", CharSet = CharSet.Ansi)]
-        private static extern int mixerGetLineControlsA(IntPtr hmxobj, ref 
+        private static extern int mixerGetLineControlsA(IntPtr hmxobj, ref
             MIXERLINECONTROLS pmxlc, int fdwControls);
 
         private struct MIXERLINECONTROLS
@@ -292,11 +293,11 @@ namespace ManagedWinapi.Audio.Mixer
         private static readonly uint MIXERCONTROL_CT_UNITS_MASK = 0x00FF0000;
 
         [DllImport("winmm.dll", CharSet = CharSet.Ansi)]
-        internal static extern int mixerGetControlDetailsA(IntPtr hmxobj, ref 
+        internal static extern int mixerGetControlDetailsA(IntPtr hmxobj, ref
             MIXERCONTROLDETAILS pmxcd, int fdwDetails);
 
         [DllImport("winmm.dll", CharSet = CharSet.Ansi)]
-        internal static extern int mixerSetControlDetails(IntPtr hmxobj, ref 
+        internal static extern int mixerSetControlDetails(IntPtr hmxobj, ref
             MIXERCONTROLDETAILS pmxcd, int fdwDetails);
 
         #endregion
@@ -344,7 +345,7 @@ namespace ManagedWinapi.Audio.Mixer
                 }
                 for (int i = 0; i < result.Length; i++)
                 {
-                    mcdu = (MIXERCONTROLDETAILS_UNSIGNED)Marshal.PtrToStructure(new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdu) * i), typeof(MIXERCONTROLDETAILS_UNSIGNED));
+                    mcdu = (MIXERCONTROLDETAILS_UNSIGNED)Marshal.PtrToStructure(new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdu) * i), typeof(MIXERCONTROLDETAILS_UNSIGNED))!;
                     result[i] = mcdu.dwValue;
                 }
                 return result;
@@ -408,7 +409,7 @@ namespace ManagedWinapi.Audio.Mixer
                 }
                 for (int i = 0; i < result.Length; i++)
                 {
-                    mcdb = (MIXERCONTROLDETAILS_BOOLEAN)Marshal.PtrToStructure(new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdb) * i), typeof(MIXERCONTROLDETAILS_BOOLEAN));
+                    mcdb = (MIXERCONTROLDETAILS_BOOLEAN)Marshal.PtrToStructure(new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdb) * i), typeof(MIXERCONTROLDETAILS_BOOLEAN))!;
                     result[i] = mcdb.fValue != 0;
                 }
                 return result;
@@ -471,7 +472,7 @@ namespace ManagedWinapi.Audio.Mixer
                 }
                 for (int i = 0; i < result.Length; i++)
                 {
-                    mcdlt = (MIXERCONTROLDETAILS_LISTTEXT)Marshal.PtrToStructure(new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdlt) * i), typeof(MIXERCONTROLDETAILS_LISTTEXT));
+                    mcdlt = (MIXERCONTROLDETAILS_LISTTEXT)Marshal.PtrToStructure(new IntPtr(mcd.paDetails.ToInt64() + Marshal.SizeOf(mcdlt) * i), typeof(MIXERCONTROLDETAILS_LISTTEXT))!;
                     result[i] = mcdlt.szName;
                 }
                 return result;

@@ -34,7 +34,7 @@ namespace ManagedWinapi.Accessibility
         /// <summary>
         /// Occurs when an accessible event is received.
         /// </summary>
-        public event AccessibleEventHandler EventOccurred;
+        public event AccessibleEventHandler? EventOccurred;
 
         private bool enabled;
         private IntPtr handle = IntPtr.Zero;
@@ -42,8 +42,8 @@ namespace ManagedWinapi.Accessibility
         private AccessibleEventType max = AccessibleEventType.EVENT_MAX;
         private WinEventDelegate internalDelegate;
         private GCHandle gch;
-        private UInt32 processId = 0;
-        private UInt32 threadId = 0;
+        private uint processId = 0;
+        private uint threadId = 0;
         private AccessibleEventFlags hookFlags = AccessibleEventFlags.OUTOFCONTEXT;
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace ManagedWinapi.Accessibility
         /// Default 0 listens to all processes.
         /// </summary>
         [CLSCompliant(false)]
-        public UInt32 ProcessId
+        public uint ProcessId
         {
             get { return processId; }
             set { processId = value; updateListener(); }
@@ -115,7 +115,7 @@ namespace ManagedWinapi.Accessibility
         /// Default 0 listens to all threads.
         /// </summary> 
         [CLSCompliant(false)]
-        public UInt32 ThreadId
+        public uint ThreadId
         {
             get { return threadId; }
             set { threadId = value; updateListener(); }
@@ -222,7 +222,7 @@ namespace ManagedWinapi.Accessibility
     /// <summary>
     /// Represents the method that will handle accessibility events.
     /// </summary>
-    public delegate void AccessibleEventHandler(object sender, AccessibleEventArgs e);
+    public delegate void AccessibleEventHandler(object? sender, AccessibleEventArgs e);
 
     /// <summary>
     /// Provides data for accessible events.

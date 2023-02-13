@@ -36,7 +36,7 @@ namespace ManagedWinapi.Hooks
         /// Occurs when the journal activity has been cancelled by
         /// CTRL+ALT+DEL or CTRL+ESC.
         /// </summary>
-        public event EventHandler JournalCancelled;
+        public event EventHandler? JournalCancelled;
         private readonly LocalMessageHook lmh;
 
         /// <summary>
@@ -200,18 +200,18 @@ namespace ManagedWinapi.Hooks
         /// Occurs when a system modal dialog appears. This may be used
         /// to stop recording.
         /// </summary>
-        public event EventHandler SystemModalDialogAppeared;
+        public event EventHandler? SystemModalDialogAppeared;
 
         /// <summary>
         /// Occurs when a system modal dialog disappears. This may be used
         /// to continue recording.
         /// </summary>
-        public event EventHandler SystemModalDialogDisappeared;
+        public event EventHandler? SystemModalDialogDisappeared;
 
         /// <summary>
         /// Occurs when an event can be recorded.
         /// </summary>
-        public event EventHandler<JournalRecordEventArgs> RecordEvent;
+        public event EventHandler<JournalRecordEventArgs>? RecordEvent;
 
         /// <summary>
         /// Creates a new journal record hook.
@@ -219,14 +219,14 @@ namespace ManagedWinapi.Hooks
         public JournalRecordHook()
             : base(HookType.WH_JOURNALRECORD)
         {
-            base.Callback += JournalRecordHook_Callback;
+            Callback += JournalRecordHook_Callback;
         }
 
         private int JournalRecordHook_Callback(int code, IntPtr wParam, IntPtr lParam, ref bool callNext)
         {
             if (code == HC_ACTION)
             {
-                EVENTMSG em = (EVENTMSG)Marshal.PtrToStructure(lParam, typeof(EVENTMSG));
+                EVENTMSG em = (EVENTMSG)Marshal.PtrToStructure(lParam, typeof(EVENTMSG))!;
                 JournalMessage jm = JournalMessage.Create(em);
                 if (RecordEvent != null)
                 {
@@ -260,13 +260,13 @@ namespace ManagedWinapi.Hooks
         /// Occurs when a system modal dialog appears. This may be used to 
         /// stop playback.
         /// </summary>
-        public event EventHandler SystemModalDialogAppeared;
+        public event EventHandler? SystemModalDialogAppeared;
 
         /// <summary>
         /// Occurs when a system modal dialog disappears. This may be used
         /// to continue playback.
         /// </summary>
-        public event EventHandler SystemModalDialogDisappeared;
+        public event EventHandler? SystemModalDialogDisappeared;
 
         /// <summary>
         /// Occurs when the next journal message is needed. If the message is
@@ -274,14 +274,14 @@ namespace ManagedWinapi.Hooks
         /// asks for a message again. If the message is <null/> and the timestamp is
         /// in the past, playback stops.
         /// </summary>
-        public event JournalQuery GetNextJournalMessage;
+        public event JournalQuery? GetNextJournalMessage;
         private int nextEventTime = 0;
-        private JournalMessage nextEvent = null;
+        private JournalMessage? nextEvent = null;
 
         /// <summary>
         /// Represents a method that yields the next journal message.
         /// </summary>
-        public delegate JournalMessage JournalQuery(ref int timestamp);
+        public delegate JournalMessage? JournalQuery(ref int timestamp);
 
         /// <summary>
         /// Creates a new journal playback hook.
@@ -289,7 +289,7 @@ namespace ManagedWinapi.Hooks
         public JournalPlaybackHook()
             : base(HookType.WH_JOURNALPLAYBACK)
         {
-            base.Callback += JournalPlaybackHook_Callback;
+            Callback += JournalPlaybackHook_Callback;
         }
 
         private int JournalPlaybackHook_Callback(int code, IntPtr wParam, IntPtr lParam, ref bool callNext)
@@ -305,7 +305,7 @@ namespace ManagedWinapi.Hooks
                 if (nextEvent == null)
                 {
                     nextEventTime = 0;
-                    nextEvent = GetNextJournalMessage(ref nextEventTime);
+                    nextEvent = GetNextJournalMessage?.Invoke(ref nextEventTime);
                     if (nextEventTime <= tick)
                     {
                         if (nextEvent == null)
@@ -325,8 +325,8 @@ namespace ManagedWinapi.Hooks
                     }
                 }
                 // now we have the next event, which should be sent
-                EVENTMSG em = (EVENTMSG)Marshal.PtrToStructure(lParam, typeof(EVENTMSG));
-                em.hWnd = nextEvent.HWnd;
+                EVENTMSG em = (EVENTMSG)Marshal.PtrToStructure(lParam, typeof(EVENTMSG))!;
+                em.hWnd = nextEvent!.HWnd;
                 em.time = nextEvent.Time;
                 em.message = nextEvent.Message;
                 em.paramH = nextEvent.ParamH;
@@ -383,13 +383,13 @@ namespace ManagedWinapi.Hooks
             hook.StartHook();
         }
 
-        private void hook_JournalCancelled(object sender, EventArgs e)
+        private void hook_JournalCancelled(object? sender, EventArgs e)
         {
             if (count >= 0) count++;
             hook.StartHook();
         }
 
-        private JournalMessage hook_GetNextJournalMessage(ref int timestamp)
+        private JournalMessage? hook_GetNextJournalMessage(ref int timestamp)
         {
             if (count == 0) return null;
             timestamp = Environment.TickCount + interval;

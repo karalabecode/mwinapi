@@ -45,6 +45,6 @@ namespace ManagedWinapi.Windows.Contents
         /// <summary>
         /// A list of properties of this content.
         /// </summary>
-        Dictionary<String, String> PropertyList { get;}
+        Dictionary<string, string?> PropertyList { get;}
     }
 }

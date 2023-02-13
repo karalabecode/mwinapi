@@ -38,13 +38,13 @@ namespace ManagedWinapi
         /// <summary>
         /// Occurs when the clipboard contents have changed.
         /// </summary>
-        public event EventHandler ClipboardChanged;
+        public event EventHandler? ClipboardChanged;
 
         private readonly IntPtr hWnd;
         private IntPtr nextHWnd;
         private readonly EventDispatchingNativeWindow ednw;
 
-        private static Boolean instantiated = false;
+        private static bool instantiated = false;
 
         /// <summary>
         /// Creates a new clipboard notifier.
@@ -64,7 +64,7 @@ namespace ManagedWinapi
             if (instantiated)
             {
                 // use new windows if more than one instance is used.
-                System.Diagnostics.Debug.WriteLine("WARNING: More than one ClipboardNotifier used!");
+                Debug.WriteLine("WARNING: More than one ClipboardNotifier used!");
                 ednw = new EventDispatchingNativeWindow();
             }
             else

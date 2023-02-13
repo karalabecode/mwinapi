@@ -34,7 +34,7 @@ namespace ManagedWinapi.Windows.Contents
 
         bool parsed = false;
         readonly string name;
-        string menu, sysmenu, clientarea;
+        string? menu, sysmenu, clientarea;
         readonly bool hasMenu, hasSysMenu, hasClientArea;
         SystemWindow sw;
 
@@ -141,11 +141,11 @@ namespace ManagedWinapi.Windows.Contents
         }
 
         ///
-        public Dictionary<string, string> PropertyList
+        public Dictionary<string, string?> PropertyList
         {
             get
             {
-                Dictionary<string, string> result = new Dictionary<string, string>();
+                Dictionary<string, string?> result = new Dictionary<string, string?>();
                 return result;
             }
         }

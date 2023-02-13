@@ -32,11 +32,11 @@ namespace ManagedWinapi.Audio.Mixer
         /// <summary>
         /// Occurs when this line changes.
         /// </summary>
-        public EventHandler Changed;
+        public EventHandler? Changed;
 
         internal MIXERLINE line;
         internal Mixer mixer;
-        private MixerControl[] controls = null;
+        private MixerControl[]? controls = null;
 
         internal MixerLine(Mixer mixer, MIXERLINE line)
         {
@@ -67,7 +67,7 @@ namespace ManagedWinapi.Audio.Mixer
         /// <summary>
         /// The volume control of this line, if it has one.
         /// </summary>
-        public FaderMixerControl VolumeControl
+        public FaderMixerControl? VolumeControl
         {
             get
             {
@@ -85,7 +85,7 @@ namespace ManagedWinapi.Audio.Mixer
         /// <summary>
         /// The mute switch of this control, if it has one.
         /// </summary>
-        public BooleanMixerControl MuteSwitch
+        public BooleanMixerControl? MuteSwitch
         {
             get
             {
@@ -142,12 +142,12 @@ namespace ManagedWinapi.Audio.Mixer
         /// </summary>
         public Mixer Mixer { get { return mixer; } }
 
-        internal MixerLine findLine(int lineId)
+        internal MixerLine? findLine(int lineId)
         {
             if (Id == lineId) { return this; }
             foreach (MixerLine ml in ChildLines)
             {
-                MixerLine found = ml.findLine(lineId);
+                MixerLine? found = ml.findLine(lineId);
                 if (found != null)
                     return found;
             }
@@ -165,7 +165,7 @@ namespace ManagedWinapi.Audio.Mixer
             }
         }
 
-        internal MixerControl findControl(int ctrlId)
+        internal MixerControl? findControl(int ctrlId)
         {
             foreach (MixerControl c in Controls)
             {
@@ -173,7 +173,7 @@ namespace ManagedWinapi.Audio.Mixer
             }
             foreach (MixerLine l in ChildLines)
             {
-                MixerControl found = l.findControl(ctrlId);
+                MixerControl? found = l.findControl(ctrlId);
                 if (found != null) return found;
             }
             return null;
@@ -238,7 +238,7 @@ namespace ManagedWinapi.Audio.Mixer
         /// </summary>
         public int SourceLineCount { get { return line.cConnections; } }
 
-        private IList<SourceLine> srcLines = null;
+        private IList<SourceLine>? srcLines = null;
 
         /// <summary>
         /// Gets all source lines of this destination line.
@@ -274,7 +274,7 @@ namespace ManagedWinapi.Audio.Mixer
         {
         }
 
-        private IList<MixerLine> childLines;
+        private IList<MixerLine>? childLines;
 
         internal override IList<MixerLine> ChildLines
         {

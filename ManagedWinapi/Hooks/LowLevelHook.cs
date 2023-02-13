@@ -16,17 +16,17 @@ namespace ManagedWinapi.Hooks
         /// <summary>
         /// Called when a key has been intercepted.
         /// </summary>
-        public event KeyCallback KeyIntercepted;
+        public event KeyCallback? KeyIntercepted;
 
         /// <summary>
         /// Called when a character has been intercepted.
         /// </summary>
-        public event CharCallback CharIntercepted;
+        public event CharCallback? CharIntercepted;
 
         /// <summary>
         /// Called when a key message has been intercepted.
         /// </summary>
-        public event LowLevelMessageCallback MessageIntercepted;
+        public event LowLevelMessageCallback? MessageIntercepted;
 
         /// <summary>
         /// Represents a method that handles an intercepted key.
@@ -63,14 +63,14 @@ namespace ManagedWinapi.Hooks
         public LowLevelKeyboardHook()
             : base(HookType.WH_KEYBOARD_LL, false, true)
         {
-            base.Callback += new HookCallback(LowLevelKeyboardHook_Callback);
+            Callback += new HookCallback(LowLevelKeyboardHook_Callback);
         }
 
         private int LowLevelKeyboardHook_Callback(int code, IntPtr wParam, IntPtr lParam, ref bool callNext)
         {
             if (code == HC_ACTION)
             {
-                KBDLLHOOKSTRUCT llh = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
+                KBDLLHOOKSTRUCT llh = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT))!;
                 bool handled = false;
                 int msg = (int)wParam;
                 if (KeyIntercepted != null)
@@ -170,24 +170,24 @@ namespace ManagedWinapi.Hooks
         /// <summary>
         /// Called when a mouse action has been intercepted.
         /// </summary>
-        public event MouseCallback MouseIntercepted;
+        public event MouseCallback? MouseIntercepted;
 
         /// <summary>
         /// Called when a mouse message has been intercepted.
         /// </summary>
-        public event LowLevelMessageCallback MessageIntercepted;
+        public event LowLevelMessageCallback? MessageIntercepted;
 
         /// <summary>Occurs when the mouse pointer is moved.</summary>
-        public event EventHandler<MouseEventArgs> MouseMove;
+        public event EventHandler<MouseEventArgs>? MouseMove;
 
         /// <summary>Occurs when a mouse button is pressed.</summary>
-        public event EventHandler<MouseEventArgs> MouseDown;
+        public event EventHandler<MouseEventArgs>? MouseDown;
 
         /// <summary>Occurs when a mouse button is released.</summary>
-        public event EventHandler<MouseEventArgs> MouseUp;
+        public event EventHandler<MouseEventArgs>? MouseUp;
 
         /// <summary>Occurs when the mouse wheel moves.</summary>
-        public event EventHandler<MouseEventArgs> MouseWheel;
+        public event EventHandler<MouseEventArgs>? MouseWheel;
 
         /// <summary>
         /// Represents a method that handles an intercepted mouse action.
@@ -210,14 +210,14 @@ namespace ManagedWinapi.Hooks
         public LowLevelMouseHook()
             : base(HookType.WH_MOUSE_LL, false, true)
         {
-            base.Callback += new HookCallback(LowLevelMouseHook_Callback);
+            Callback += new HookCallback(LowLevelMouseHook_Callback);
         }
 
         private int LowLevelMouseHook_Callback(int code, IntPtr wParam, IntPtr lParam, ref bool callNext)
         {
             if (code == HC_ACTION)
             {
-                MSLLHOOKSTRUCT llh = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                MSLLHOOKSTRUCT llh = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT))!;
 
                 fireMouseEvents(wParam, llh.pt, llh.mouseData);
 

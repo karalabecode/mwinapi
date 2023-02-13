@@ -367,7 +367,7 @@ namespace ManagedWinapi.Windows
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
         /// <returns></returns>
-        public static SystemWindow FromPoint(int x, int y)
+        public static SystemWindow? FromPoint(int x, int y)
         {
             IntPtr hwnd = WindowFromPoint(new POINT(x, y));
             if (hwnd.ToInt64() == 0)
@@ -386,9 +386,9 @@ namespace ManagedWinapi.Windows
         /// <param name="toplevel">Whether to return the toplevel window.</param>
         /// <param name="enabledOnly">Whether to return enabled windows only.</param>
         /// <returns></returns>
-        public static SystemWindow FromPointEx(int x, int y, bool toplevel, bool enabledOnly)
+        public static SystemWindow? FromPointEx(int x, int y, bool toplevel, bool enabledOnly)
         {
-            SystemWindow sw = FromPoint(x, y);
+            SystemWindow? sw = FromPoint(x, y);
             if (sw == null) return null;
             while (sw.ParentSymmetric != null)
                 sw = sw.ParentSymmetric;
@@ -491,10 +491,10 @@ namespace ManagedWinapi.Windows
         public IntPtr HWnd { get { return _hwnd; } }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="string" /> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
@@ -539,7 +539,7 @@ namespace ManagedWinapi.Windows
         /// The name of the window class (by the <c>GetClassName</c> API function).
         /// This class has nothing to do with classes in C# or other .NET languages.
         /// </summary>
-        public string ClassName
+        public string? ClassName
         {
             get
             {
@@ -683,11 +683,11 @@ namespace ManagedWinapi.Windows
         /// parents, like dialog owners, do not have the window as its child. In that case,
         /// <c>null</c> will be returned.
         /// </summary>
-        public SystemWindow ParentSymmetric
+        public SystemWindow? ParentSymmetric
         {
             get
             {
-                SystemWindow result = Parent;
+                SystemWindow? result = Parent;
                 if (!this.IsDescendantOf(result)) result = null;
                 return result;
             }
@@ -819,12 +819,12 @@ namespace ManagedWinapi.Windows
             return IsChild(ancestor._hwnd, _hwnd);
         }
 
-        private Process _cachedProcess = null;
+        private Process? _cachedProcess = null;
 
         /// <summary>
         /// The process which created this window.
         /// </summary>
-        public Process Process
+        public Process? Process
         {
             get
             {
@@ -946,7 +946,7 @@ namespace ManagedWinapi.Windows
         /// <summary>
         /// The window's visible region.
         /// </summary>
-        public Region Region
+        public Region? Region
         {
             get
             {
@@ -962,7 +962,7 @@ namespace ManagedWinapi.Windows
             {
                 Bitmap bmp = new Bitmap(1, 1);
                 Graphics g = Graphics.FromImage(bmp);
-                SetWindowRgn(HWnd, value.GetHrgn(g), true);
+                SetWindowRgn(HWnd, value!.GetHrgn(g), true);
                 g.Dispose();
             }
         }
@@ -1000,7 +1000,7 @@ namespace ManagedWinapi.Windows
         /// Get the window that is below this window in the Z order,
         /// or null if this is the lowest window.
         /// </summary>
-        public SystemWindow WindowBelow
+        public SystemWindow? WindowBelow
         {
             get
             {
@@ -1014,7 +1014,7 @@ namespace ManagedWinapi.Windows
         /// Get the window that is above this window in the Z order,
         /// or null, if this is the foreground window.
         /// </summary>
-        public SystemWindow WindowAbove
+        public SystemWindow? WindowAbove
         {
             get
             {
@@ -1045,7 +1045,7 @@ namespace ManagedWinapi.Windows
         /// The content of this window. Is only supported for some
         /// kinds of controls (like text or list boxes).
         /// </summary>
-        public WindowContent Content
+        public WindowContent? Content
         {
             get
             {
@@ -1060,7 +1060,7 @@ namespace ManagedWinapi.Windows
         /// guarantee that the <see cref="WindowContent.ShortDescription"/> field is
         /// filled accurately.
         /// </summary>
-        public WindowContent PreviewContent
+        public WindowContent? PreviewContent
         {
             get
             {
@@ -1135,7 +1135,7 @@ namespace ManagedWinapi.Windows
         {
             // By using parent, we get better results in refreshing old drawing window area.
             IntPtr hwndToRefresh = this._hwnd;
-            SystemWindow parentWindow = this.ParentSymmetric;
+            SystemWindow? parentWindow = this.ParentSymmetric;
             if (parentWindow != null)
             {
                 hwndToRefresh = parentWindow._hwnd;
@@ -1163,20 +1163,20 @@ namespace ManagedWinapi.Windows
         #region Equals and HashCode
 
         ///
-        public override bool Equals(System.Object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null)
             {
                 return false;
             }
-            SystemWindow sw = obj as SystemWindow;
+            SystemWindow? sw = obj as SystemWindow;
             return Equals(sw);
         }
 
         ///
-        public bool Equals(SystemWindow sw)
+        public bool Equals(SystemWindow? sw)
         {
-            if ((object)sw == null)
+            if (sw is null)
             {
                 return false;
             }
@@ -1193,13 +1193,13 @@ namespace ManagedWinapi.Windows
         /// <summary>
         /// Compare two instances of this class for equality.
         /// </summary>
-        public static bool operator ==(SystemWindow a, SystemWindow b)
+        public static bool operator ==(SystemWindow? a, SystemWindow? b)
         {
-            if (System.Object.ReferenceEquals(a, b))
+            if (ReferenceEquals(a, b))
             {
                 return true;
             }
-            if (((object)a == null) || ((object)b == null))
+            if ((a is null) || (b is null))
             {
                 return false;
             }
@@ -1209,7 +1209,7 @@ namespace ManagedWinapi.Windows
         /// <summary>
         /// Compare two instances of this class for inequality.
         /// </summary>
-        public static bool operator !=(SystemWindow a, SystemWindow b)
+        public static bool operator !=(SystemWindow? a, SystemWindow? b)
         {
             return !(a == b);
         }

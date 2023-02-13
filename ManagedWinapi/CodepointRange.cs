@@ -317,7 +317,7 @@ namespace ManagedWinapi
         }
 
         /// <summary>
-        /// Returns a <see cref="String"/> representation of this codepoint range.
+        /// Returns a <see cref="string"/> representation of this codepoint range.
         /// </summary>
         public override string ToString()
         {
@@ -341,9 +341,9 @@ namespace ManagedWinapi
         #region Equals and HashCode
 
         ///
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            CodepointRange cr = obj as CodepointRange;
+            CodepointRange? cr = obj as CodepointRange;
             if (cr == null)
                 return false;
             if (codepointCount != cr.codepointCount || ranges.Length != cr.ranges.Length)

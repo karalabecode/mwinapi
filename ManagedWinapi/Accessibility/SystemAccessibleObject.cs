@@ -95,7 +95,7 @@ namespace ManagedWinapi.Accessibility
         /// <param name="objectID">Which accessibility object to get</param>
         /// <returns></returns>
         [CLSCompliant(false)]
-        public static SystemAccessibleObject FromWindow(SystemWindow window, AccessibleObjectID objectID)
+        public static SystemAccessibleObject FromWindow(SystemWindow? window, AccessibleObjectID objectID)
         {
             IAccessible iacc = (IAccessible)AccessibleObjectFromWindow(window == null ? IntPtr.Zero : window.HWnd, (uint)objectID, new Guid("{618736E0-3C3D-11CF-810C-00AA00389B71}"));
             return new SystemAccessibleObject(iacc, 0);
@@ -127,7 +127,7 @@ namespace ManagedWinapi.Accessibility
         /// Gets an accessibility object for the input caret, or
         /// <b>null</b> if there is none.
         /// </summary>
-        public static SystemAccessibleObject Caret
+        public static SystemAccessibleObject? Caret
         {
             get
             {
@@ -157,12 +157,12 @@ namespace ManagedWinapi.Accessibility
         /// Convert a state number (which may include more than one state bit)
         /// to a localized string.
         /// </summary>
-        public static String StateToString(int stateNumber)
+        public static string StateToString(int stateNumber)
         {
             if (stateNumber == 0) return "None";
             int lowBit = stateNumber & -stateNumber;
             int restBits = stateNumber - lowBit;
-            String s1 = StateBitToString(lowBit);
+            string s1 = StateBitToString(lowBit);
             if (restBits == 0) return s1;
             return StateToString(restBits) + ", " + s1;
         }
@@ -262,7 +262,7 @@ namespace ManagedWinapi.Accessibility
                 }
                 else
                 {
-                    return role.ToString();
+                    return role.ToString()!;
                 }
             }
         }
@@ -289,7 +289,7 @@ namespace ManagedWinapi.Accessibility
         /// <summary>
         /// The value of this accessible object.
         /// </summary>
-        public string Value
+        public string? Value
         {
             get
             {
@@ -367,7 +367,7 @@ namespace ManagedWinapi.Accessibility
         /// <summary>
         /// The parent of this accessible object, or <b>null</b> if none exists.
         /// </summary>
-        public SystemAccessibleObject Parent
+        public SystemAccessibleObject? Parent
         {
             get
             {
@@ -387,9 +387,9 @@ namespace ManagedWinapi.Accessibility
                     // similar special case handling and ignoring of "MSAAHTML Registered Handler":
                     // http://www.projky.com/dotnet/4.5.1/MS/Internal/AutomationProxies/Accessible.cs.html
 
-                    Uri uri = null;
+                    Uri? uri = null;
                     if (RoleIndex == (int)AccRoles.ROLE_SYSTEM_PANE && Uri.TryCreate(Value, UriKind.Absolute, out uri)
-                        && string.Equals(Window.Process.ProcessName, "iexplore", StringComparison.OrdinalIgnoreCase))
+                        && string.Equals(Window.Process?.ProcessName, "iexplore", StringComparison.OrdinalIgnoreCase))
                     {
                         // do not call parent
                         return null;
@@ -406,7 +406,7 @@ namespace ManagedWinapi.Accessibility
         /// <summary>
         /// The keyboard shortcut of this accessible object.
         /// </summary>
-        public string KeyboardShortcut
+        public string? KeyboardShortcut
         {
             get
             {
@@ -424,7 +424,7 @@ namespace ManagedWinapi.Accessibility
         /// A string describing the default action of this accessible object.
         /// For a button, this might be "Press".
         /// </summary>
-        public string DefaultAction
+        public string? DefaultAction
         {
             get
             {
@@ -552,7 +552,7 @@ namespace ManagedWinapi.Accessibility
         /// <summary>
         /// Get specific child of accessible object.
         /// </summary>
-        public SystemAccessibleObject GetChild(int index)
+        public SystemAccessibleObject? GetChild(int index)
         {
             // ID-referenced objects cannot have children
             if (childID != 0) return null;
@@ -612,20 +612,20 @@ namespace ManagedWinapi.Accessibility
         #region Equals and HashCode
 
         ///
-        public override bool Equals(System.Object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null)
             {
                 return false;
             }
-            SystemAccessibleObject sao = obj as SystemAccessibleObject;
+            SystemAccessibleObject? sao = obj as SystemAccessibleObject;
             return Equals(sao);
         }
 
         ///
-        public bool Equals(SystemAccessibleObject sao)
+        public bool Equals(SystemAccessibleObject? sao)
         {
-            if ((object)sao == null)
+            if (sao is null)
             {
                 return false;
             }
@@ -673,11 +673,11 @@ namespace ManagedWinapi.Accessibility
         /// </summary>
         public static bool operator ==(SystemAccessibleObject a, SystemAccessibleObject b)
         {
-            if (System.Object.ReferenceEquals(a, b))
+            if (ReferenceEquals(a, b))
             {
                 return true;
             }
-            if (((object)a == null) || ((object)b == null))
+            if ((a is null) || (b is null))
             {
                 return false;
             }

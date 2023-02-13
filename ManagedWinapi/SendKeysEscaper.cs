@@ -57,7 +57,7 @@ namespace ManagedWinapi
             ALWAYS 
         }
 
-        private static SendKeysEscaper _instance;
+        private static SendKeysEscaper? _instance;
 
         /// <summary>
         /// The singleton instance.

@@ -43,9 +43,9 @@ namespace ManagedWinapi.Windows
     public class EventDispatchingNativeWindow : NativeWindow
     {
 
-        private static Object myLock = new Object();
+        private static object myLock = new object();
         [ThreadStatic]
-        private static EventDispatchingNativeWindow _instance;
+        private static EventDispatchingNativeWindow? _instance;
 
         /// <summary>
         /// A global instance which can be used by components that do not need
@@ -67,7 +67,7 @@ namespace ManagedWinapi.Windows
         /// <summary>
         /// Attach your event handlers here.
         /// </summary>
-        public event WndProcEventHandler EventHandler;
+        public event WndProcEventHandler? EventHandler;
 
         /// <summary>
         /// Create your own event dispatching window.

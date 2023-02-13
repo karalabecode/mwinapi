@@ -103,7 +103,7 @@ namespace ManagedWinapi
     [Category("Appearance")]
     [DefaultValue(null)]
     [Description("A custom bitmap image used to render the caret. If null, the caret will take have the usual block form. If the image height exceeds the Control height, it is automatically truncated.")]
-    public Bitmap CursorImage
+    public Bitmap? CursorImage
     {
       get { return Caret.CursorImage; }
       set { Caret.CursorImage = value; }

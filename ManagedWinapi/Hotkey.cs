@@ -38,9 +38,9 @@ namespace ManagedWinapi
         /// <summary>
         /// Occurs when the hotkey is pressed.
         /// </summary>
-        public event EventHandler HotkeyPressed;
+        public event EventHandler? HotkeyPressed;
 
-        private static Object myStaticLock = new Object();
+        private static object myStaticLock = new object();
         private static int hotkeyCounter = 0xA000;
 
         private int hotkeyIndex;

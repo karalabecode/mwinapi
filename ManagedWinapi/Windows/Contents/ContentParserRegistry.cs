@@ -24,7 +24,7 @@ namespace ManagedWinapi.Windows.Contents
 {
     internal class ContentParserRegistry
     {
-        static ContentParserRegistry instance = null;
+        static ContentParserRegistry? instance = null;
 
         public static ContentParserRegistry Instance
         {
@@ -49,7 +49,7 @@ namespace ManagedWinapi.Windows.Contents
             parsers.Add(new TextFieldParser(false));
         }
 
-        public WindowContentParser GetParser(SystemWindow sw)
+        public WindowContentParser? GetParser(SystemWindow sw)
         {
             foreach(WindowContentParser p in parsers) {
                 if (p.CanParseContent(sw))

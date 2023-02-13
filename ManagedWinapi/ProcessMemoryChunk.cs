@@ -187,7 +187,7 @@ namespace ManagedWinapi
         /// <summary>
         /// Read a part of this chunk to a structure.
         /// </summary>
-        public object ReadToStructure(int offset, Type structureType)
+        public object? ReadToStructure(int offset, Type structureType)
         {
             int size = Marshal.SizeOf(structureType);
             IntPtr localPtr = Marshal.AllocHGlobal(size);
